@@ -1,10 +1,12 @@
 from Render import *
-r = Render(100,100)
+global r
 def glInit():
-    print("glInit")
+    global r
+    r = Render()
+    
 
 def glCreateWindow(width, height):
-    r = Render(width,height)
+    r.bufferStart(width,height)
     
 def glViewPort(x, y, width, height):
     print("glViewPort")
@@ -12,9 +14,8 @@ def glViewPort(x, y, width, height):
 def glClear():
     r.clear()
 
-def glClearColor(r, g, b):
-    r=Render(0,0,0)
-    r.backgroundcolor(rgbcolor(r,g,b))
+def glClearColor(red, g, b):
+    r.backgroundcolor(red,g,b)
     
 def glVertex(x, y):
     print("glVertex")
@@ -23,4 +24,5 @@ def glColor(r, g, b):
     print("glColor")
     
 def glFinish():
-    print("glFinish")
+    r.write('a.bmp') 
+    

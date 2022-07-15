@@ -3,20 +3,22 @@ from WriteUtilities import *
 from Color import *
 class Render(object):
     
-    def backgroundcolor(self,colorarray):
-        self.color = intcolor(colorarray)
-    
-    def __init__(self, width, height):
+    def __init__(self):
+        print("Render Class Created")
+        
+        
+    def backgroundcolor(self,r,g,b):
+        self.color = [intcolor(r),intcolor(g),intcolor(b)]
+        
+    def bufferStart (self, width, height):
         self.width = width
         self.height = height 
-        #if self.width % 4 != 0: self.width+=self.width % 4
-        #if self.height % 4 != 0: self.height+=self.height % 4
-        self.backgroundcolor([0,0,0])
-        self.clear(self.color)
-
-    def clear (self,colors):
+        self.backgroundcolor(0,0,0)
+        self.clear()
+        
+    def clear (self):
         self.framebuffer=[
-            [rgbcolor(*colors) for x in range(self.width)]
+            [rgbcolor(*self.color) for x in range(self.width)]
             for y in range(self.height)
         ]
     def write(self, filename):
@@ -24,8 +26,6 @@ class Render(object):
         
         extraBytes = (4 - (self.width * 3) % 4) % 4
         new_width_bytes = (self.width * 3) + extraBytes
-        
-        # 1025 * 3 + 1 -> 3076
         
         #pixel header
         f.write(char('B'))
