@@ -1,4 +1,4 @@
 def rgbcolor(r,g,b):
-        return bytes([r,b,g])
+        return bytes([b,g,r])
 def intcolor(n):
         return round(n*255)

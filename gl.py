@@ -9,7 +9,7 @@ def glCreateWindow(width, height):
     r.bufferStart(width,height)
     
 def glViewPort(x, y, width, height):
-    print("glViewPort")
+    r.viewPort(*r.vertexConvert(x,y),width,height)
 
 def glClear():
     r.clear()
@@ -18,10 +18,10 @@ def glClearColor(red, g, b):
     r.backgroundcolor(red,g,b)
     
 def glVertex(x, y):
-    print("glVertex")
+    r.point(*r.vertexConvert(x,y))
      
-def glColor(r, g, b):
-    print("glColor")
+def glColor(red, g, b):
+    r.pointcolor(red,g,b)
     
 def glFinish():
     r.write('a.bmp') 

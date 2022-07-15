@@ -1,3 +1,4 @@
+from turtle import width
 from sympy import Point
 from WriteUtilities import * 
 from Color import *
@@ -5,14 +6,37 @@ class Render(object):
     
     def __init__(self):
         print("Render Class Created")
+        self.pointcolor(0,0,0,)
+        self.yVp=0
+        self.xVp=0
+        
+    
+    def vertexConvert (self,x,y):
+        return [int(self.xVp+(x+1)*0.5*self.widthVp-1),int(self.yVp+(y+1)*0.5*self.heightVp-1)]    
+    
+    def viewPort (self,x,y,neww,newh):
+        self.widthVp = neww
+        self.heightVp = newh
+        self.yVp=y
+        self.xVp=x
         
         
+        
+        print('Hola')
+        
+       
     def backgroundcolor(self,r,g,b):
         self.color = [intcolor(r),intcolor(g),intcolor(b)]
-        
+    
+    def pointcolor(self,r,g,b):
+        self.pcolor =[intcolor(r),intcolor(g),intcolor(b)]
+    
     def bufferStart (self, width, height):
         self.width = width
         self.height = height 
+        self.heightVp =height
+        self.widthVp =width
+        
         self.backgroundcolor(0,0,0)
         self.clear()
         
@@ -40,7 +64,7 @@ class Render(object):
         f.write(dword(self.width))
         f.write(dword(self.height))
         f.write(word(1))
-        f.write(dword(24))
+        f.write(word(24))
         f.write(dword(0))
         f.write(dword(self.height * self.width * 3))
         f.write(dword(0))
@@ -60,8 +84,11 @@ class Render(object):
         f.close()
         
     def point(self, x,y):
-        self.framebuffer[x][y] = rgbcolor(250,0,0)
-        
+        if not(x > self.width and x < 0 and y > self.height and x < 0):
+            self.framebuffer[x][y] = rgbcolor(*self.pcolor)
+    
+    
+    
     def line (self,x0,y0,x1,y1):
         dy = abs(y1 -y0)
         dx = abs(x1- x0)

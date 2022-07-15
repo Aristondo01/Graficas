@@ -10,8 +10,11 @@ r.write('a.bmp') """
 
 glInit()
 glCreateWindow(100,100)
-glClearColor(0, 0, 1)
+glClearColor(1, 0, 0)
 glClear()
+glColor(1,1,1)
+glViewPort(-1,-1,50,50)
+glVertex(0,0)
 glFinish()
 
 
