@@ -85,11 +85,13 @@ class Render(object):
         
     def point(self, x,y):
         if not(x > self.width and x < 0 and y > self.height and x < 0):
-            self.framebuffer[x][y] = rgbcolor(*self.pcolor)
+            self.framebuffer[y][x] = rgbcolor(*self.pcolor)
     
     
     
     def line (self,x0,y0,x1,y1):
+        #x0,y0 = self.vertexConvert(x0,y0)
+        #x1,y1 = self.vertexConvert(x1,y1)
         dy = abs(y1 -y0)
         dx = abs(x1- x0)
         steep = dy > dx    

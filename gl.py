@@ -23,6 +23,9 @@ def glVertex(x, y):
 def glColor(red, g, b):
     r.pointcolor(red,g,b)
     
+def glLine(x0,y0,x1,y1):
+    r.line(x0,y0,x1,y1)
+
 def glFinish():
     r.write('a.bmp') 
     
