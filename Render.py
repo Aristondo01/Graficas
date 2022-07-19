@@ -20,10 +20,6 @@ class Render(object):
         self.yVp=y
         self.xVp=x
         
-        
-        
-        print('Hola')
-        
        
     def backgroundcolor(self,r,g,b):
         self.color = [intcolor(r),intcolor(g),intcolor(b)]
@@ -90,8 +86,7 @@ class Render(object):
     
     
     def line (self,x0,y0,x1,y1):
-        #x0,y0 = self.vertexConvert(x0,y0)
-        #x1,y1 = self.vertexConvert(x1,y1)
+                
         dy = abs(y1 -y0)
         dx = abs(x1- x0)
         steep = dy > dx    
