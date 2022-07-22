@@ -105,15 +105,26 @@ class Render(object):
         offset=0
         threshold = dx * 2
         y=y0
-        for x in range(x0,x1):
+        for x in range(x0,x1+1):
+            if steep:
+                self.point(y,x)
+                #self.point(y,x+1)
+                #self.point(y-1,x+1)
+                self.point(y,x-1)
+                
+                
+                
+            else:
+                self.point(x,y)
+                self.point(x-1,y)
+                #self.point(x+1,y-1)
+                #self.point(x-1,y-1)
+                
             offset+=dy*2
             if offset >= threshold:
                 y+=1 if y0<y1 else -1
                 threshold+=dx*2
                 
-            if steep:
-                self.point(y,x)
-            else:
-                self.point(x,y)
+            
 
         
