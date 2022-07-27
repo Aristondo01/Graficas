@@ -1,4 +1,4 @@
-from turtle import width
+from Obj import Obj
 from sympy import Point
 from WriteUtilities import * 
 from Color import *
@@ -20,7 +20,9 @@ class Render(object):
         self.yVp=y
         self.xVp=x
         
-       
+    
+        
+    
     def backgroundcolor(self,r,g,b):
         self.color = [intcolor(r),intcolor(g),intcolor(b)]
     
@@ -108,22 +110,36 @@ class Render(object):
         for x in range(x0,x1+1):
             if steep:
                 self.point(y,x)
-                #self.point(y,x+1)
-                #self.point(y-1,x+1)
-                self.point(y,x-1)
+                #self.point(y,x-1)
                 
                 
                 
             else:
                 self.point(x,y)
-                self.point(x-1,y)
-                #self.point(x+1,y-1)
-                #self.point(x-1,y-1)
+                #self.point(x-1,y)
                 
             offset+=dy*2
             if offset >= threshold:
                 y+=1 if y0<y1 else -1
                 threshold+=dx*2
+
+    def transform_vertex(self,vertex, scale, translate):
+        return [
+                int(vertex[0] * scale[0] + translate[0]),
+                int(vertex[1] * scale[1] + translate[1])
+        ]  
+
+    def ObjCall(self,nombre, scale_factor, translate_factor):
+            figura = Obj(nombre+'.obj')
+            for face in figura.caras:
+                for i in range(len(face)):
+                    f1 = face[i][0] - 1
+                    f2 = face[(i+1)%len(face)][0] - 1
+
+                    v1 = self.transform_vertex(figura.vertices[f1], scale_factor, translate_factor)
+                    v2 = self.transform_vertex(figura.vertices[f2], scale_factor, translate_factor)
+
+                    self.line(v1[0], v1[1], v2[0], v2[1])
                 
             
 

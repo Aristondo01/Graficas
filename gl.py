@@ -31,7 +31,7 @@ def glLine(x0,y0,x1,y1):
     r.line(*r.vertexConvert(glPixel(x0,500),glPixel(y0,500)),*r.vertexConvert(glPixel(x1,500),glPixel(y1,500)))
 
 def glLine2(x0,y0,x1,y1):
-    r.line(x0,y0,x1,y1)
+    r.line(int(x0),int(y0),int(x1),int(y1))
     
 
 def glRellenar(arreglo):
@@ -80,10 +80,10 @@ def glRellenar(arreglo):
                 
             Pequeño.append([x,y])
         arreglo=Pequeño
-        Pequeño=[]
-                
-                
-                
+        Pequeño=[]             
+
+def obj3D(nombre, scale_factor, translate_factor):
+    r.ObjCall(nombre, scale_factor, translate_factor)
 
 def glFinish(nombre):
     r.write(nombre+'.bmp') 
