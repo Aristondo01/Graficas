@@ -3,8 +3,8 @@ from random import random
 from sympy import Point
 from WriteUtilities import * 
 from Color import *
-colors={'Body4': (1, 1, 1), 'Body5': (0, 0, 1), 'Body6': (0, 0, 1), 'Body11': (0, 0, 1), 'Body12': (0, 0, 1), 'Body13': (0, 0, 1), 'Body14': (0, 0, 1), 'Body15': (0, 0, 1), 'Body16': (0, 0, 1), 'Body17': (0, 0, 1), 'Body488': (1, 1, 1)}
-#olors={'Body4': (1, 1, 1), 'Body5': (0, 0, 1), 'Body6': (0, 0, 1), 'Body11': (0, 0, 1), 'Body12': (0, 0, 1), 'Body13': Cara, 'Body14': (0, 0, 1), 'Body15': (0, 0, 1), 'Body16': (0, 0, 1), 'Body17': (0, 0, 1), 'Body488': (0, 0, 1)}
+colors={'Body4': (0, 0, 1), 'Body5': (1, 1, 1), 'Body6': (1, 1, 1), 'Body11': (1, 1, 1), 'Body12': (1, 1, 1), 'Body13': (1, 1, 1), 'Body14': (1, 1, 1), 'Body15': (1, 1, 1), 'Body16': (1, 1, 1), 'Body17': (1, 1, 1), 'Body488': (0, 0, 1)}
+#olors={'Body4': (0, 0, 1), 'Body5': (1, 1, 1), 'Body6': (1, 1, 1), 'Body11': (1, 1, 1), 'Body12': (1, 1, 1), 'Body13': Cara, 'Body14': (1, 1, 1), 'Body15': (1, 1, 1), 'Body16': (1, 1, 1), 'Body17': (1, 1, 1), 'Body488': (1, 1, 1)}
 
 class Render(object):
     
