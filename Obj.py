@@ -5,9 +5,12 @@ class Obj(object):
         
         self.vertices = []
         self.caras = []
+        self.body=[]
+        currentg=None
         
         for line in self.lines:
-            prefix, value =line.split(' ',1)
+            if not (line==""):
+                prefix, value =line.split(' ',1)
             if prefix == 'v':
                 self.vertices.append(
                     list( 
@@ -18,4 +21,7 @@ class Obj(object):
                 self.caras.append([
                     list(map(int,face.split('/')))
                     for face in value.split(' ')
-                    ])
+                    ]+[currentg])
+            if prefix == 'g':
+                self.body.append(value)
+                currentg=value

@@ -1,12 +1,16 @@
 from Obj import Obj
+from random import random
 from sympy import Point
 from WriteUtilities import * 
 from Color import *
+colors={'Body4': (1, 1, 1), 'Body5': (0, 0, 1), 'Body6': (0, 0, 1), 'Body11': (0, 0, 1), 'Body12': (0, 0, 1), 'Body13': (0, 0, 1), 'Body14': (0, 0, 1), 'Body15': (0, 0, 1), 'Body16': (0, 0, 1), 'Body17': (0, 0, 1), 'Body488': (1, 1, 1)}
+#olors={'Body4': (1, 1, 1), 'Body5': (0, 0, 1), 'Body6': (0, 0, 1), 'Body11': (0, 0, 1), 'Body12': (0, 0, 1), 'Body13': Cara, 'Body14': (0, 0, 1), 'Body15': (0, 0, 1), 'Body16': (0, 0, 1), 'Body17': (0, 0, 1), 'Body488': (0, 0, 1)}
+
 class Render(object):
     
     def __init__(self):
         print("Render Class Created")
-        self.pointcolor(0,0,0,)
+        self.pointcolor(0,0,0)
         self.yVp=0
         self.xVp=0
         
@@ -131,7 +135,11 @@ class Render(object):
 
     def ObjCall(self,nombre, scale_factor, translate_factor):
             figura = Obj(nombre+'.obj')
+            g=None
             for face in figura.caras:
+                g=face.pop()
+                #colors[g]=(round(random(),2),round(random(),2),round(random(),2))
+                if(g !=None): self.pointcolor(*colors[g]) #Quitar si no hay colores
                 for i in range(len(face)):
                     f1 = face[i][0] - 1
                     f2 = face[(i+1)%len(face)][0] - 1
@@ -140,7 +148,6 @@ class Render(object):
                     v2 = self.transform_vertex(figura.vertices[f2], scale_factor, translate_factor)
 
                     self.line(v1[0], v1[1], v2[0], v2[1])
-                
-            
+            #print(colors)
 
         
