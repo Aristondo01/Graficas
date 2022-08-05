@@ -1,4 +1,5 @@
 from Render import *
+from vector import V3
 global r
 def glInit():
     global r
@@ -32,6 +33,10 @@ def glLine(x0,y0,x1,y1):
 
 def glLine2(x0,y0,x1,y1):
     r.line(int(x0),int(y0),int(x1),int(y1))
+    
+def glTriangulo (V1,V2,V3):
+    r.triangulo(V1,V2,V3)
+    
     
 
 def glRellenar(arreglo):
