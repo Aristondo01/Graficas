@@ -2,11 +2,10 @@ from gl import *
 glInit()
 glCreateWindow(1024,1024)
 glClearColor(0.8, 1, 1)
-glClearColor(0.1, 0.1, 0.1)
 
 glClear()
 scale_factor = (24, 24,24)
-translate_factor = (500, 250,0)
+translate_factor = (500, 250,250)
 obj3D('Mandalorian',scale_factor,translate_factor)
 """
 glColor(1,0,0)

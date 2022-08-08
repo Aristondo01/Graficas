@@ -12,9 +12,10 @@ class Render(object):
     
     def __init__(self):
         print("Render Class Created")
-        self.pointcolor(0,0,0)
+        self.pointcolor(1,1,1)
         self.yVp=0
         self.xVp=0
+        
     
     def vertexConvert (self,x,y):
         return [round(self.xVp+(x+1)*0.5*self.widthVp-1),round(self.yVp+(y+1)*0.5*self.heightVp-1)]    
@@ -53,6 +54,12 @@ class Render(object):
             [-99999 for x in range(self.width)]
             for y in range(self.height)
         ]
+        
+        self.zpaint=[
+            [rgbcolor(*(10,50,180)) for x in range(self.width)]
+            for y in range(self.height)
+        ]
+        
     def write(self, filename):
         f = open(filename, 'bw')
         
@@ -85,6 +92,46 @@ class Render(object):
         for x in range(self.height):
             for y in range(self.width):
                 f.write(self.framebuffer[x][y])
+            extra = []
+            for i in range(extraBytes):
+                extra.append(0)
+            f.write(bytes(extra))
+        f.close()
+        self.writez()
+        
+    #Quitar despupes
+    def writez(self):
+        f = open("zbuffer.bmp", 'bw')
+        
+        extraBytes = (4 - (self.width * 3) % 4) % 4
+        new_width_bytes = (self.width * 3) + extraBytes
+        
+        #pixel header
+        f.write(char('B'))
+        f.write(char('M'))
+        f.write(dword(14 + 40 + new_width_bytes * self.height * 3))
+        f.write(word(0))
+        f.write(word(0))
+        f.write(dword(14 + 40))
+        
+        #info header
+        f.write(dword(40))
+        f.write(dword(self.width))
+        f.write(dword(self.height))
+        f.write(word(1))
+        f.write(word(24))
+        f.write(dword(0))
+        f.write(dword(self.height * self.width * 3))
+        f.write(dword(0))
+        f.write(dword(0))
+        f.write(dword(0))
+        f.write(dword(0))
+        
+        #pixel data
+        
+        for x in range(self.height):
+            for y in range(self.width):
+                f.write(self.zpaint[x][y])
             extra = []
             for i in range(extraBytes):
                 extra.append(0)
@@ -142,9 +189,10 @@ class Render(object):
                     continue
                 
                 z= v1.z * w + v2.z * v + v3.z * u
-                
+                t= z /(self.width)
                 if (self.zBuffer[x][y]<z):
                     self.zBuffer[x][y]=z
+                    self.zpaint[y][x]=rgbcolor(round(255*t),round(255*t),round(255*t))
                     self.point(x,y)
         pass
         
@@ -201,7 +249,6 @@ class Render(object):
                 round(vertex[0] * scale[0] + translate[0]),
                 round(vertex[1] * scale[1] + translate[1]),
                 round(vertex[2] * scale[2] + translate[2])
-                
         )
 
     def ObjCall(self,nombre, scale_factor, translate_factor):
@@ -223,7 +270,7 @@ class Render(object):
                     v4 = self.transform_vertex(figura.vertices[f4], scale_factor, translate_factor)
 
                     self.triangulo(v1,v2,v3)
-                    self.triangulo(v1,v3,v4)
+                    self.triangulo(v1,v2,v4)
                 
                 if len(face)==3:
                     f1 = face[0][0] - 1
