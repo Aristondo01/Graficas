@@ -5,17 +5,20 @@ from sympy import Point
 from WriteUtilities import * 
 from Color import *
 from vector import V3
+from textures import *
+colors={}
 colors={'Body4': (0, 0, 1), 'Body5': (0.8, 0.8, 1), 'Body6': (0.8, 0.8, 1), 'Body11': (0.8, 0.8, 1), 'Body12': (0.8, 0.8, 1), 'Body13': (0.8, 0.8, 1), 'Body14': (0.8, 0.8, 1), 'Body15': (0.8, 0.8, 1), 'Body16': (0.8, 0.8, 1), 'Body17': (0.8, 0.8, 1), 'Body488': (0, 0, 1)}
-#olors={'Body4': (0, 0, 1), 'Body5': (0.8, 0.8, 1), 'Body6': (0.8, 0.8, 1), 'Body11': (0.8, 0.8, 1), 'Body12': (0.8, 0.8, 1), 'Body13': Cara, 'Body14': (0.8, 0.8, 1), 'Body15': (0.8, 0.8, 1), 'Body16': (0.8, 0.8, 1), 'Body17': (0.8, 0.8, 1), 'Body488': (0.8, 0.8, 1)}
 
 class Render(object):
     
-    def __init__(self):
+    def __init__(self,w=None,h=None):
         print("Render Class Created")
-        self.pointcolor(1,1,1)
+        self.pointcolor(1,0,1)
         self.yVp=0
         self.xVp=0
-        
+        self.width=w
+        self.height=h
+        self.texture=None
     
     def vertexConvert (self,x,y):
         return [round(self.xVp+(x+1)*0.5*self.widthVp-1),round(self.yVp+(y+1)*0.5*self.heightVp-1)]    
@@ -26,13 +29,16 @@ class Render(object):
         self.yVp=y
         self.xVp=x
         
+    def get_Texture(self,nombre):
+        t=Texture(nombre)
+        self.texture=t
     
-        
     
     def backgroundcolor(self,r,g,b):
         self.color = [intcolor(r),intcolor(g),intcolor(b)]
     
     def pointcolor(self,r,g,b):
+        #print("red:"+str(r)+" green: "+str(g)+" blue: "+str(b))
         self.pcolor =[intcolor(r),intcolor(g),intcolor(b)]
     
     def bufferStart (self, width, height):
@@ -60,7 +66,7 @@ class Render(object):
             for y in range(self.height)
         ]
         
-    def write(self, filename):
+    def write(self, filename="a.bmp"):
         f = open(filename, 'bw')
         
         extraBytes = (4 - (self.width * 3) % 4) % 4
@@ -97,7 +103,8 @@ class Render(object):
                 extra.append(0)
             f.write(bytes(extra))
         f.close()
-        self.writez()
+        print("BMP Create in "+filename)
+        #self.writez()
         
     #Quitar despupes
     def writez(self):
@@ -139,7 +146,8 @@ class Render(object):
         f.close()
         
     def point(self, x,y):
-        if not(x > self.width and x < 0 and y > self.height and x < 0):
+        
+        if (x < self.width and x >= 0 and y < self.height and y >= 0):
             self.framebuffer[y][x] = rgbcolor(*self.pcolor)
     
     
@@ -162,17 +170,23 @@ class Render(object):
         v= cy / cz
         w= 1 -(cx + cy)/cz 
         return (w,v,u)
+    
+    def triangulo2(self,temp):
+        #temp =[v1,v2,v3]
+        for i in range(len(temp)):
+            self.line(temp[i],temp[(i+1)%3])
         
-    def triangulo(self,v1,v2,v3):
-
+    
+    def triangulo(self,Vertices):
         
+        v1,v2,v3=Vertices
         L=V3(0,0,-1)
         N = (v3-v1) * (v2-v1)
         i= N.normalize() @ L.normalize()
         
         if i <= 0 or i>1:
             return
-        
+        #print(i)
         self.pcolor=(round(self.pcolor[0]*i),round(self.pcolor[1]*i),round(self.pcolor[2]*i))
         
         
@@ -189,14 +203,17 @@ class Render(object):
                     continue
                 
                 z= v1.z * w + v2.z * v + v3.z * u
-                t= z /(self.width)
+                #t= z 
                 if (self.zBuffer[x][y]<z):
                     self.zBuffer[x][y]=z
-                    self.zpaint[y][x]=rgbcolor(round(255*t),round(255*t),round(255*t))
                     self.point(x,y)
+                    #self.zpaint[y][x]=rgbcolor(self.clamp(t),self.clamp(t),self.clamp(t))
         pass
         
-    
+    def clamp(self,val):
+        temp= round(val*255)
+        return max(0,min(temp,255))
+        
     def line (self,V1,V2):
         x0=V1.x
         y0=V1.y
@@ -251,13 +268,38 @@ class Render(object):
                 round(vertex[2] * scale[2] + translate[2])
         )
 
-    def ObjCall(self,nombre, scale_factor, translate_factor):
+    def plano(self,nombre):
+        t=Texture(nombre)
+        self.framebuffer=t.pixels
+
+
+        figura = Obj("cara.obj")
+        w=[t.width,t.heigth,0]
+        e=[0,0,0]
+        #self.pointcolor(1,1,1)
+
+
+        for face in figura.caras:
+            
+            f1 = face[0][1] - 1
+            f2 = face[1][1] - 1
+            f3 = face[2][1] - 1
+
+            v1 = self.transform_vertex(figura.tvertices[f1],w,e)
+            v2 = self.transform_vertex(figura.tvertices[f2],w,e)
+            v3 = self.transform_vertex(figura.tvertices[f3],w,e)
+
+            self.triangulo2((v1,v2,v3))
+                
+        self.write()   
+    
+    def ObjCall(self,nombre, scale_factor, translate_factor,color):
             figura = Obj(nombre+'.obj')
             g=None
             for face in figura.caras:
                 g=face.pop()
-                if(g !=None): self.pointcolor(*colors[g]) #Quitar si no hay colores
-                
+                if(g !=None and g in colors): self.pointcolor(*colors[g]) #Quitar si no hay colores
+                else: self.pointcolor(*color)
                 if len(face)==4:
                     f1 = face[0][0] - 1
                     f2 = face[1][0] - 1
@@ -269,8 +311,8 @@ class Render(object):
                     v3 = self.transform_vertex(figura.vertices[f3], scale_factor, translate_factor)
                     v4 = self.transform_vertex(figura.vertices[f4], scale_factor, translate_factor)
 
-                    self.triangulo(v1,v2,v3)
-                    self.triangulo(v1,v2,v4)
+                    self.triangulo((v1,v2,v3))
+                    self.triangulo((v1,v2,v4))
                 
                 if len(face)==3:
                     f1 = face[0][0] - 1
@@ -281,6 +323,6 @@ class Render(object):
                     v2 = self.transform_vertex(figura.vertices[f2], scale_factor, translate_factor)
                     v3 = self.transform_vertex(figura.vertices[f3], scale_factor, translate_factor)
 
-                    self.triangulo(v1,v2,v3)
+                    self.triangulo((v1,v2,v3))
                     
         

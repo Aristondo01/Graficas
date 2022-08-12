@@ -1,9 +1,17 @@
+from encodings import normalize_encoding
 from Render import *
 from vector import V3
 global r
 def glInit():
     global r
     r = Render()
+
+def glPlano(nombre):
+    g = Render(1024,1024)
+    g.plano(nombre)
+
+def glTexture(nombre):
+    r.get_Texture(nombre)
 
 def glPixel(coordenada, tam):
     temp = coordenada / tam
@@ -35,7 +43,7 @@ def glLine2(x0,y0,x1,y1):
     r.line(int(x0),int(y0),int(x1),int(y1))
     
 def glTriangulo (V1,V2,V3):
-    r.triangulo(V1,V2,V3)
+    r.triangulo((V1,V2,V3))
     
     
 
@@ -58,8 +66,8 @@ def glRellenar(arreglo):
             maxy=arreglo[i][1]
         if(arreglo[i][1]<miny):
             miny=arreglo[i][1]
-    coordenada.append(int(minx+(maxx-minx)/2))
-    coordenada.append(int(miny+(maxy-miny)/2))
+    coordenada.append(round(minx+(maxx-minx)/2))
+    coordenada.append(round(miny+(maxy-miny)/2))
     r.point(coordenada[0],coordenada[1])
     
     for j in range(90):
@@ -87,8 +95,8 @@ def glRellenar(arreglo):
         arreglo=Pequeño
         Pequeño=[]             
 
-def obj3D(nombre, scale_factor, translate_factor):
-    r.ObjCall(nombre, scale_factor, translate_factor)
+def obj3D(nombre, scale_factor, translate_factor,color):
+    r.ObjCall(nombre, scale_factor, translate_factor,color)
 
 def glFinish(nombre):
     r.write(nombre+'.bmp') 

@@ -2,9 +2,11 @@ class Obj(object):
     def __init__(self, filename):
         with open(filename) as f:
             self.lines = f.read().splitlines()
+            print(filename+" abierto")
         
         self.vertices = []
         self.caras = []
+        self.tvertices=[]
         self.body=[]
         currentg=None
         
@@ -17,6 +19,13 @@ class Obj(object):
                             map(float, value.split(' '))
                         )
                     )
+            if prefix == 'vt':
+                self.tvertices.append(
+                    list( 
+                            map(float, value.split(' '))
+                        )
+                    )
+            
             if prefix == 'f':
                 self.caras.append([
                     list(map(int,face.split('/')))
