@@ -6,8 +6,8 @@ from WriteUtilities import *
 from Color import *
 from vector import V3
 from textures import *
-colors={}
 colors={'Body4': (0, 0, 1), 'Body5': (0.8, 0.8, 1), 'Body6': (0.8, 0.8, 1), 'Body11': (0.8, 0.8, 1), 'Body12': (0.8, 0.8, 1), 'Body13': (0.8, 0.8, 1), 'Body14': (0.8, 0.8, 1), 'Body15': (0.8, 0.8, 1), 'Body16': (0.8, 0.8, 1), 'Body17': (0.8, 0.8, 1), 'Body488': (0, 0, 1)}
+colors={}
 
 class Render(object):
     
@@ -177,8 +177,10 @@ class Render(object):
             self.line(temp[i],temp[(i+1)%3])
         
     
-    def triangulo(self,Vertices):
+    def triangulo(self,Vertices,Tvertices=None):
         
+        if self.texture:
+            tA,tB,tC=Tvertices
         v1,v2,v3=Vertices
         L=V3(0,0,-1)
         N = (v3-v1) * (v2-v1)
@@ -186,14 +188,16 @@ class Render(object):
         
         if i <= 0 or i>1:
             return
-        #print(i)
-        self.pcolor=(round(self.pcolor[0]*i),round(self.pcolor[1]*i),round(self.pcolor[2]*i))
+        
+        if not self.texture:
+            self.pcolor=(round(self.pcolor[0]*i),round(self.pcolor[1]*i),round(self.pcolor[2]*i))
         
         
         
         Bmin,Bmax = self.bounding_box(v1,v2,v3)
         Bmin.round()
         Bmax.round()
+        # self.pcolor = (0, 0, 0)
         
         for x in range(Bmin.x,Bmax.x+1):
             for y in range(Bmin.y,Bmax.y+1):
@@ -203,11 +207,15 @@ class Render(object):
                     continue
                 
                 z= v1.z * w + v2.z * v + v3.z * u
-                #t= z 
                 if (self.zBuffer[x][y]<z):
                     self.zBuffer[x][y]=z
+                    
+                    if self.texture:
+                        tx = tA.x * w + tB.x * u + tC.x * v
+                        ty = tA.y * w + tB.y * u + tC.y * v 
+                        self.pcolor = self.texture.intensity(tx, ty, i)
+                    #if self.pcolor:
                     self.point(x,y)
-                    #self.zpaint[y][x]=rgbcolor(self.clamp(t),self.clamp(t),self.clamp(t))
         pass
         
     def clamp(self,val):
@@ -276,7 +284,6 @@ class Render(object):
         figura = Obj("cara.obj")
         w=[t.width,t.heigth,0]
         e=[0,0,0]
-        #self.pointcolor(1,1,1)
 
 
         for face in figura.caras:
@@ -311,8 +318,19 @@ class Render(object):
                     v3 = self.transform_vertex(figura.vertices[f3], scale_factor, translate_factor)
                     v4 = self.transform_vertex(figura.vertices[f4], scale_factor, translate_factor)
 
-                    self.triangulo((v1,v2,v3))
-                    self.triangulo((v1,v2,v4))
+                    ft1 = face[0][1] - 1
+                    ft2 = face[1][1] - 1
+                    ft3 = face[2][1] - 1
+                    ft4 = face[3][1] - 1
+
+                    vt1 = V3(*figura.tvertices[ft1])
+                    vt2 = V3(*figura.tvertices[ft2])
+                    vt3 = V3(*figura.tvertices[ft3])
+                    vt4 = V3(*figura.tvertices[ft4])
+
+
+                    self.triangulo((v1,v2,v3),(vt1,vt2,vt3))
+                    self.triangulo((v1,v2,v4),(vt1,vt2,vt4))
                 
                 if len(face)==3:
                     f1 = face[0][0] - 1
@@ -323,6 +341,14 @@ class Render(object):
                     v2 = self.transform_vertex(figura.vertices[f2], scale_factor, translate_factor)
                     v3 = self.transform_vertex(figura.vertices[f3], scale_factor, translate_factor)
 
-                    self.triangulo((v1,v2,v3))
+                    ft1 = face[0][1] - 1
+                    ft2 = face[1][1] - 1
+                    ft3 = face[2][1] - 1
+
+                    vt1 = V3(*figura.tvertices[ft1])
+                    vt2 = V3(*figura.tvertices[ft2])
+                    vt3 = V3(*figura.tvertices[ft3])
+
+                    self.triangulo((v1,v2,v3),(vt1,vt2,vt3))
                     
         

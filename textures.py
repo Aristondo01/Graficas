@@ -35,12 +35,18 @@ class Texture:
         return self.pixels[y][x]
     
     def intensity(self,tx,ty,intensity):
+        (self.width, self.heigth)
         x=round(tx*self.width)
         y=round(ty*self.heigth)
         
-        b= self.pixels[y][x][0]*intensity
-        g= self.pixels[y][x][1]*intensity
-        r= self.pixels[y][x][2]*intensity
-        
-        return rgbcolor(r,g,b)
+        if(x<self.width and y<self.heigth):
+            b= round(self.pixels[y][x][0]*intensity)
+            g= round(self.pixels[y][x][1]*intensity)
+            r= round(self.pixels[y][x][2]*intensity)
+            
+            b=max(0,min(b,255))
+            g=max(0,min(g,255))
+            r=max(0,min(r,255))
+            
+            return rgbcolor(b,g,r)
      
