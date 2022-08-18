@@ -1,19 +1,21 @@
 from gl import *
 
 
-#glPlano("model.bmp")
-
 glInit()
-glCreateWindow(1500,1500)
+glCreateWindow(2500,2500)
 glClearColor(1, 1, 1)
 glClear()
 glColor(1,1,1)
-color=(1,1,1)
-glTexture('model.bmp')
-scale_factor = (585, 585,400)
-translate_factor = (700, 700,50)
-obj3D('Cara',scale_factor,translate_factor,color)
-glFinish('Cara')
+color=(0,0,1)
+glTexture('dino.bmp')
+scale_factor = (22,22,15)
+translate_factor = (1200, 200,0)
+obj3D('dino',scale_factor,translate_factor,color)
+glFinish('Dinosaurio')
+
+
+#glPlano("dino.bmp",'dino',4096,4096)
+
 
 
 

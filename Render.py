@@ -146,7 +146,6 @@ class Render(object):
         f.close()
         
     def point(self, x,y):
-        
         if (x < self.width and x >= 0 and y < self.height and y >= 0):
             self.framebuffer[y][x] = rgbcolor(*self.pcolor)
     
@@ -197,7 +196,6 @@ class Render(object):
         Bmin,Bmax = self.bounding_box(v1,v2,v3)
         Bmin.round()
         Bmax.round()
-        # self.pcolor = (0, 0, 0)
         
         for x in range(Bmin.x,Bmax.x+1):
             for y in range(Bmin.y,Bmax.y+1):
@@ -248,9 +246,9 @@ class Render(object):
         for x in range(x0,x1+1):
             if steep:
                 self.point(y,x)
-                self.point(y,x+1)
-                self.point(y-1,x)
-                self.point(y-1,x+1)
+                ##self.point(y,x+1)
+                ##self.point(y-1,x)
+                ##self.point(y-1,x+1)
                 
                 
                 
@@ -258,9 +256,9 @@ class Render(object):
                 
             else:
                 self.point(x,y)
-                self.point(x+1,y)
-                self.point(x,y-1)
-                self.point(x+1,y-1)
+                #self.point(x+1,y)
+                #self.point(x,y-1)
+                #self.point(x+1,y-1)
                 
                 
                 
@@ -270,33 +268,51 @@ class Render(object):
                 threshold+=dx*2
 
     def transform_vertex(self,vertex, scale, translate):
+        if len(vertex)==2: vertex.append(0)
         return V3(
                 round(vertex[0] * scale[0] + translate[0]),
                 round(vertex[1] * scale[1] + translate[1]),
                 round(vertex[2] * scale[2] + translate[2])
         )
 
-    def plano(self,nombre):
+    def plano(self,nombre,OBJ3D):
         t=Texture(nombre)
         self.framebuffer=t.pixels
 
 
-        figura = Obj("cara.obj")
+        figura = Obj(OBJ3D+'.obj')
         w=[t.width,t.heigth,0]
         e=[0,0,0]
 
 
         for face in figura.caras:
+            g=face.pop()
+            if len(face)==3:
+                f1 = face[0][1] - 1
+                f2 = face[1][1] - 1
+                f3 = face[2][1] - 1
+
+                v1 = self.transform_vertex(figura.tvertices[f1],w,e)
+                v2 = self.transform_vertex(figura.tvertices[f2],w,e)
+                v3 = self.transform_vertex(figura.tvertices[f3],w,e)
+
+                self.triangulo2((v1,v2,v3))
             
-            f1 = face[0][1] - 1
-            f2 = face[1][1] - 1
-            f3 = face[2][1] - 1
+            if len(face)==4:
+                
+                f1 = face[0][1] - 1
+                f2 = face[1][1] - 1
+                f3 = face[2][1] - 1
+                f4 = face[3][1] - 1
 
-            v1 = self.transform_vertex(figura.tvertices[f1],w,e)
-            v2 = self.transform_vertex(figura.tvertices[f2],w,e)
-            v3 = self.transform_vertex(figura.tvertices[f3],w,e)
+                v1 = self.transform_vertex(figura.tvertices[f1],w,e)
+                v2 = self.transform_vertex(figura.tvertices[f2],w,e)
+                v3 = self.transform_vertex(figura.tvertices[f3],w,e)
+                v4 = self.transform_vertex(figura.tvertices[f4],w,e)
 
-            self.triangulo2((v1,v2,v3))
+                self.triangulo2((v1,v2,v3))
+                self.triangulo2((v1,v3,v4))
+                
                 
         self.write()   
     
@@ -330,7 +346,7 @@ class Render(object):
 
 
                     self.triangulo((v1,v2,v3),(vt1,vt2,vt3))
-                    self.triangulo((v1,v2,v4),(vt1,vt2,vt4))
+                    self.triangulo((v1,v3,v4),(vt1,vt3,vt4))
                 
                 if len(face)==3:
                     f1 = face[0][0] - 1

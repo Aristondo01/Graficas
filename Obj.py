@@ -11,7 +11,7 @@ class Obj(object):
         currentg=None
         
         for line in self.lines:
-            if not (line==""):
+            if (line!="" and len(line.split(' ',1))>1):
                 prefix, value =line.split(' ',1)
             if prefix == 'v':
                 self.vertices.append(

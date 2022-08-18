@@ -6,9 +6,9 @@ def glInit():
     global r
     r = Render()
 
-def glPlano(nombre):
-    g = Render(1024,1024)
-    g.plano(nombre)
+def glPlano(nombre,OBJ3D,w,h):
+    g = Render(w,h)
+    g.plano(nombre,OBJ3D)
 
 def glTexture(nombre):
     r.get_Texture(nombre)
