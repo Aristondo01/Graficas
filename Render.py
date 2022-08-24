@@ -19,6 +19,8 @@ class Render(object):
         self.width=w
         self.height=h
         self.texture=None
+        self.trianguloarray = []
+        self.luz =V3(0,0,-1)
     
     def vertexConvert (self,x,y):
         return [round(self.xVp+(x+1)*0.5*self.widthVp-1),round(self.yVp+(y+1)*0.5*self.heightVp-1)]    
@@ -32,7 +34,6 @@ class Render(object):
     def get_Texture(self,nombre):
         t=Texture(nombre)
         self.texture=t
-    
     
     def backgroundcolor(self,r,g,b):
         self.color = [intcolor(r),intcolor(g),intcolor(b)]
@@ -104,9 +105,7 @@ class Render(object):
             f.write(bytes(extra))
         f.close()
         print("BMP Create in "+filename)
-        #self.writez()
-        
-    #Quitar despupes
+    
     def writez(self):
         f = open("zbuffer.bmp", 'bw')
         
@@ -148,9 +147,7 @@ class Render(object):
     def point(self, x,y):
         if (x < self.width and x >= 0 and y < self.height and y >= 0):
             self.framebuffer[y][x] = rgbcolor(*self.pcolor)
-    
-    
-    
+            
     def bounding_box(self,A,B,C):
         xs=[A.x,B.x,C.x]
         ys=[A.y,B.y,C.y]
@@ -174,14 +171,20 @@ class Render(object):
         #temp =[v1,v2,v3]
         for i in range(len(temp)):
             self.line(temp[i],temp[(i+1)%3])
+          
+    def triangulo(self):
         
-    
-    def triangulo(self,Vertices,Tvertices=None):
+        #v1,v2,v3=Vertices
+        v1=next(self.trianguloarray)
+        v2=next(self.trianguloarray)
+        v3=next(self.trianguloarray)
         
-        if self.texture:
-            tA,tB,tC=Tvertices
-        v1,v2,v3=Vertices
-        L=V3(0,0,-1)
+        tA=next(self.trianguloarray)
+        tB=next(self.trianguloarray)
+        tC=next(self.trianguloarray)
+            #tA,tB,tC=Tvertices
+             
+        L=self.luz
         N = (v3-v1) * (v2-v1)
         i= N.normalize() @ L.normalize()
         
@@ -338,15 +341,37 @@ class Render(object):
                     ft2 = face[1][1] - 1
                     ft3 = face[2][1] - 1
                     ft4 = face[3][1] - 1
+                    #Si truena
+                    try:
+                        vt1 = V3(*figura.tvertices[ft1])
+                        vt2 = V3(*figura.tvertices[ft2])
+                        vt3 = V3(*figura.tvertices[ft3])
+                        vt4 = V3(*figura.tvertices[ft4])
+                    except:
+                        vt1=0
+                        vt2=0
+                        vt3=0
+                        vt4=0
+                        
 
-                    vt1 = V3(*figura.tvertices[ft1])
-                    vt2 = V3(*figura.tvertices[ft2])
-                    vt3 = V3(*figura.tvertices[ft3])
-                    vt4 = V3(*figura.tvertices[ft4])
-
-
-                    self.triangulo((v1,v2,v3),(vt1,vt2,vt3))
-                    self.triangulo((v1,v3,v4),(vt1,vt3,vt4))
+                    #self.trianguloarray.extend(v1,v2,v3,vt1,vt2,vt3)
+                    self.trianguloarray.append(v1)
+                    self.trianguloarray.append(v2)
+                    self.trianguloarray.append(v3)
+                    self.trianguloarray.append(vt1)
+                    self.trianguloarray.append(vt2)
+                    self.trianguloarray.append(vt3)
+                    
+                    
+                    #self.triangulo()
+                    #self.trianguloarray.extend(v1,v3,v4,vt1,vt3,vt4)
+                    self.trianguloarray.append(v1)
+                    self.trianguloarray.append(v3)
+                    self.trianguloarray.append(v4)
+                    self.trianguloarray.append(vt1)
+                    self.trianguloarray.append(vt3)
+                    self.trianguloarray.append(vt4)
+                    #self.triangulo()
                 
                 if len(face)==3:
                     f1 = face[0][0] - 1
@@ -361,10 +386,31 @@ class Render(object):
                     ft2 = face[1][1] - 1
                     ft3 = face[2][1] - 1
 
-                    vt1 = V3(*figura.tvertices[ft1])
-                    vt2 = V3(*figura.tvertices[ft2])
-                    vt3 = V3(*figura.tvertices[ft3])
-
-                    self.triangulo((v1,v2,v3),(vt1,vt2,vt3))
+                    
+                    try:
+                        vt1 = V3(*figura.tvertices[ft1])
+                        vt2 = V3(*figura.tvertices[ft2])
+                        vt3 = V3(*figura.tvertices[ft3])
+                    except:
+                        vt1 = 0
+                        vt2 = 0
+                        vt3 = 0
+                        
+                    
+                    self.trianguloarray.append(v1)
+                    self.trianguloarray.append(v2)
+                    self.trianguloarray.append(v3)
+                    self.trianguloarray.append(vt1)
+                    self.trianguloarray.append(vt2)
+                    self.trianguloarray.append(vt3)
+                    #self.triangulo()
+            self.draw()
+            
+    def draw (self):
+        self.trianguloarray=iter(self.trianguloarray)
+        try:
+            while True:
+                self.triangulo()
+        except: StopIteration
                     
         
