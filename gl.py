@@ -8,10 +8,10 @@ def glInit():
 
 def glPlano(nombre,OBJ3D,w,h):
     g = Render(w,h)
-    g.plano(nombre,OBJ3D)
+    g.plano(nombre+".bmp",OBJ3D)
 
 def glTexture(nombre):
-    r.get_Texture(nombre)
+    r.get_Texture(nombre+".bmp")
 
 def glPixel(coordenada, tam):
     temp = coordenada / tam
