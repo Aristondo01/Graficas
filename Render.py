@@ -1,4 +1,4 @@
-from audioop import cross
+from tkinter import Scale
 from Obj import Obj
 from random import random
 from sympy import Point
@@ -6,6 +6,8 @@ from WriteUtilities import *
 from Color import *
 from vector import V3
 from textures import *
+from matriz import *
+from math import *
 colors={'Body4': (0, 0, 1), 'Body5': (0.8, 0.8, 1), 'Body6': (0.8, 0.8, 1), 'Body11': (0.8, 0.8, 1), 'Body12': (0.8, 0.8, 1), 'Body13': (0.8, 0.8, 1), 'Body14': (0.8, 0.8, 1), 'Body15': (0.8, 0.8, 1), 'Body16': (0.8, 0.8, 1), 'Body17': (0.8, 0.8, 1), 'Body488': (0, 0, 1)}
 colors={}
 
@@ -21,6 +23,58 @@ class Render(object):
         self.texture=None
         self.trianguloarray = []
         self.luz =V3(0,0,-1)
+        self.Model = None
+        self.Vista = None
+    
+    def lookAt(self,eye,center,up):
+        z=(eye - center).norm()
+        x= up.cross(up,z).norm()
+        y= up.cross(z,x).norm()
+        
+        self.Vista=MM()
+     
+    def loadModelMatriz(self,translate=(0,0,0),scale=(1,1,1),rotate=(0,0,0)):
+        translate=V3(*translate)
+        scale=V3(*scale)
+        rotate=V3(*rotate)
+        
+        translateM=MM([
+            [1,0,0,translate.x],
+            [0,1,0,translate.y],
+            [0,0,1,translate.z],
+            [0,0,0,1]
+        ])
+        
+        scaleM=MM([
+            [scale.x,      0,      0,0],
+            [      0,scale.y,      0,0],
+            [      0,      0,scale.z,0],
+            [      0,      0,      0,1]
+        ])
+        a=rotate.x
+        rotacionx=MM([
+            [1,     0,           0, 0],
+            [0, cos(a),    -sin(a), 0],
+            [0, sin(a),     cos(a), 0],
+            [0,     0,          0,  1]
+        ])
+        a=rotate.y
+        rotaciony=MM([
+            [ cos(a),     0,    sin(a), 0],
+            [      0,     1,         0, 0],
+            [-sin(a),     0,    cos(a), 0],
+            [      0,     0,         0, 1]
+        ])
+        a=rotate.z
+        rotacionz=MM([
+            [cos(a),-sin(a),    0,0],
+            [sin(a), cos(a),    0,0],
+            [     0,      0,    1,0],
+            [     0,      0,    0,1]
+        ])
+        rotacionM=rotacionx * rotaciony * rotacionz
+        self.Model = translateM *rotacionM * scaleM
+        
     
     def vertexConvert (self,x,y):
         return [round(self.xVp+(x+1)*0.5*self.widthVp-1),round(self.yVp+(y+1)*0.5*self.heightVp-1)]    
@@ -270,12 +324,16 @@ class Render(object):
                 y+=1 if y0<y1 else -1
                 threshold+=dx*2
 
-    def transform_vertex(self,vertex, scale, translate):
-        if len(vertex)==2: vertex.append(0)
+    def transform_vertex(self,vertex):
+        
+        vertex_aumentado=MM([[vertex[0]],[vertex[1]],[vertex[2]],[1]])
+        transformed_vertex= self.Model * vertex_aumentado
+        
         return V3(
-                round(vertex[0] * scale[0] + translate[0]),
-                round(vertex[1] * scale[1] + translate[1]),
-                round(vertex[2] * scale[2] + translate[2])
+            transformed_vertex.matriz[0][0]/transformed_vertex.matriz[3][0],
+            transformed_vertex.matriz[1][0]/transformed_vertex.matriz[3][0],
+            transformed_vertex.matriz[2][0]/transformed_vertex.matriz[3][0]
+            
         )
 
     def plano(self,nombre,OBJ3D):
@@ -313,13 +371,14 @@ class Render(object):
                 v3 = self.transform_vertex(figura.tvertices[f3],w,e)
                 v4 = self.transform_vertex(figura.tvertices[f4],w,e)
 
+                
                 self.triangulo2((v1,v2,v3))
                 self.triangulo2((v1,v3,v4))
                 
                 
         self.write()   
     
-    def ObjCall(self,nombre, scale_factor, translate_factor,color):
+    def ObjCall(self,nombre,color):
             figura = Obj(nombre+'.obj')
             g=None
             for face in figura.caras:
@@ -332,10 +391,11 @@ class Render(object):
                     f3 = face[2][0] - 1
                     f4 = face[3][0] - 1
 
-                    v1 = self.transform_vertex(figura.vertices[f1], scale_factor, translate_factor)
-                    v2 = self.transform_vertex(figura.vertices[f2], scale_factor, translate_factor)
-                    v3 = self.transform_vertex(figura.vertices[f3], scale_factor, translate_factor)
-                    v4 = self.transform_vertex(figura.vertices[f4], scale_factor, translate_factor)
+                    v1 = self.transform_vertex(figura.vertices[f1])
+                    v2 = self.transform_vertex(figura.vertices[f2])
+                    v3 = self.transform_vertex(figura.vertices[f3])
+                    v4 = self.transform_vertex(figura.vertices[f4])
+
 
                     ft1 = face[0][1] - 1
                     ft2 = face[1][1] - 1
@@ -378,9 +438,9 @@ class Render(object):
                     f2 = face[1][0] - 1
                     f3 = face[2][0] - 1
 
-                    v1 = self.transform_vertex(figura.vertices[f1], scale_factor, translate_factor)
-                    v2 = self.transform_vertex(figura.vertices[f2], scale_factor, translate_factor)
-                    v3 = self.transform_vertex(figura.vertices[f3], scale_factor, translate_factor)
+                    v1 = self.transform_vertex(figura.vertices[f1])
+                    v2 = self.transform_vertex(figura.vertices[f2])
+                    v3 = self.transform_vertex(figura.vertices[f3])
 
                     ft1 = face[0][1] - 1
                     ft2 = face[1][1] - 1

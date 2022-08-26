@@ -44,7 +44,9 @@ def glLine2(x0,y0,x1,y1):
     
 def glTriangulo (V1,V2,V3):
     r.triangulo((V1,V2,V3))
-    
+
+def glLoadMMatriz (translate_factor,scale_factor,rotate):
+    r.loadModelMatriz(translate_factor,scale_factor,rotate)
     
 
 def glRellenar(arreglo):
@@ -95,8 +97,8 @@ def glRellenar(arreglo):
         arreglo=Pequeño
         Pequeño=[]             
 
-def obj3D(nombre, scale_factor, translate_factor,color):
-    r.ObjCall(nombre, scale_factor, translate_factor,color)
+def obj3D(nombre,color):
+    r.ObjCall(nombre,color)
 
 def glFinish(nombre):
     r.write(nombre+'.bmp') 

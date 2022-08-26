@@ -3,24 +3,23 @@ class MM(object):
         self.matriz = matriz
     
     def __mul__(self, other):
+        
         selfy=len(self.matriz)
-        selfx=len(self.matriz[0])
         othery=len(other.matriz)
         otherx=len(other.matriz[0])     
         
-        Multiplicacion=[[0 for y in range(selfy)]
-                        for x in range(otherx)]
+        Multiplicacion=[]
         
         for i in range(selfy):
+            Multiplicacion.append([])
             for j in range(otherx):
+                Multiplicacion[i].append([])
                 temp=0
                 for k in range(othery):                        
                     temp+=self.matriz[i][k]*other.matriz[k][j]
-                Multiplicacion[i][j]+=temp
+                Multiplicacion[i][j]=temp
         return MM(Multiplicacion)
             
-        
-        
     
     def __add__(self,other):
         try:

@@ -1,3 +1,5 @@
+from matriz import *
+
 class V3(object):
     def __init__(self,x,y,z=0):
         self.x=x
@@ -54,6 +56,8 @@ class V3(object):
     def __matmul__(self, other):
         return self.x* other.x +self.y* other.y+ self.z* other.z
             
+    def convert(self):
+        return MM([self.x,self.y,self.z])
     
     def __repr__(self):
         return "V3(%s,%s,%s)" % (self.x,self.y,self.z)

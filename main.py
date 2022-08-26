@@ -8,9 +8,11 @@ glClear()
 glColor(1,1,1)
 color=(0,0,1)
 glTexture(objeto)
+translate_factor = (1350, 1000,200)
 scale_factor = (550,550,550)
-translate_factor = (1300, 900,0)
-obj3D(objeto,scale_factor,translate_factor,color)
+rotate = (0,-pi/3,0)
+glLoadMMatriz(translate_factor,scale_factor,rotate)
+obj3D(objeto,color)
 glFinish(objeto+"3D")
 
 
