@@ -8,7 +8,6 @@ class Obj(object):
         self.caras = []
         self.tvertices=[]
         self.body=[]
-        currentg=None
         
         for line in self.lines:
             if (line!="" and len(line.split(' ',1))>1):
@@ -30,7 +29,4 @@ class Obj(object):
                 self.caras.append([
                     list(map(int,face.split('/')))
                     for face in value.split(' ')
-                    ]+[currentg])
-            if prefix == 'g':
-                self.body.append(value)
-                currentg=value
+                    ])

@@ -380,11 +380,8 @@ class Render(object):
     
     def ObjCall(self,nombre,color):
             figura = Obj(nombre+'.obj')
-            g=None
+            self.pointcolor(*color)
             for face in figura.caras:
-                g=face.pop()
-                if(g !=None and g in colors): self.pointcolor(*colors[g]) #Quitar si no hay colores
-                else: self.pointcolor(*color)
                 if len(face)==4:
                     f1 = face[0][0] - 1
                     f2 = face[1][0] - 1
@@ -423,15 +420,12 @@ class Render(object):
                     self.trianguloarray.append(vt3)
                     
                     
-                    #self.triangulo()
-                    #self.trianguloarray.extend(v1,v3,v4,vt1,vt3,vt4)
                     self.trianguloarray.append(v1)
                     self.trianguloarray.append(v3)
                     self.trianguloarray.append(v4)
                     self.trianguloarray.append(vt1)
                     self.trianguloarray.append(vt3)
                     self.trianguloarray.append(vt4)
-                    #self.triangulo()
                 
                 if len(face)==3:
                     f1 = face[0][0] - 1
@@ -463,7 +457,7 @@ class Render(object):
                     self.trianguloarray.append(vt1)
                     self.trianguloarray.append(vt2)
                     self.trianguloarray.append(vt3)
-                    #self.triangulo()
+
             self.draw()
             
     def draw (self):
