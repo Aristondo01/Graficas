@@ -97,6 +97,9 @@ def glRellenar(arreglo):
         arreglo=Pequeño
         Pequeño=[]             
 
+def glLookAt(eye, center, up):
+    r.lookAt(eye, center, up)
+
 def obj3D(nombre,color):
     r.ObjCall(nombre,color)
 

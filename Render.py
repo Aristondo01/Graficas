@@ -1,4 +1,3 @@
-from tkinter import Scale
 from Obj import Obj
 from random import random
 from sympy import Point
@@ -74,7 +73,35 @@ class Render(object):
         ])
         rotacionM=rotacionx * rotaciony * rotacionz
         self.Model = translateM *rotacionM * scaleM
-        
+    
+    def loadViewMatrix(self, x, y, z, center):
+        Mi = MM([
+            [x.x, x.y, x.z, 0],
+            [y.x, y.y, y.z, 0],
+            [z.x, z.y, z.z, 0], 
+            [0,0,0,1]
+
+        ])
+
+        O = MM([
+            [1, 0, 0, -center.x],
+            [0, 1, 0, -center.y],
+            [0, 0, 1, -center.z],
+            [0, 0, 0,         1]
+        ])
+
+        self.Vista = Mi * O
+
+    def lookAt(self, eye, center, up):
+        eye = V3(*eye)
+        center = V3(*center)
+        up = V3(*up)
+
+        z = (eye-center).normalize()
+        x = (up * z).normalize()
+        y = (z * x).normalize()
+
+        self.loadViewMatrix(x,y,z, center)
     
     def vertexConvert (self,x,y):
         return [round(self.xVp+(x+1)*0.5*self.widthVp-1),round(self.yVp+(y+1)*0.5*self.heightVp-1)]    
@@ -327,7 +354,7 @@ class Render(object):
     def transform_vertex(self,vertex):
         
         vertex_aumentado=MM([[vertex[0]],[vertex[1]],[vertex[2]],[1]])
-        transformed_vertex= self.Model * vertex_aumentado
+        transformed_vertex= self.Model *self.Vista *vertex_aumentado
         
         return V3(
             transformed_vertex.matriz[0][0]/transformed_vertex.matriz[3][0],
