@@ -24,13 +24,6 @@ class Render(object):
         self.luz =V3(0,0,-1)
         self.Model = None
         self.Vista = None
-    
-    def lookAt(self,eye,center,up):
-        z=(eye - center).norm()
-        x= up.cross(up,z).norm()
-        y= up.cross(z,x).norm()
-        
-        self.Vista=MM()
      
     def loadModelMatriz(self,translate=(0,0,0),scale=(1,1,1),rotate=(0,0,0)):
         translate=V3(*translate)
