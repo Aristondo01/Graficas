@@ -2,20 +2,21 @@ from gl import *
 
 objeto="R2-D2"
 glInit()
-glCreateWindow(1024,1024)
+glCreateWindow(480,480)
+glViewPort(0,0,1024,1024)
 glClearColor(1, 1, 1)
 glClear()
 glColor(1,1,1)
 color=(0,0,1)
 glTexture(objeto)
-translate_factor = (550, 500,500)
-scale_factor = (200,200,200)
-rotate = (0,0,0)
+translate_factor = (0.3,0,-0.1)
+scale_factor = (0.4,0.4,0.4)
+rotate = (0,pi/5,0)
 glLoadMMatriz(translate_factor,scale_factor,rotate)
-eye=(100,100,0)
-center=(0,0.1,0)
-up=(0,1,0)
-glLookAt(eye, center, up)
+#En cámara ingresar el tipo de toma que se desea ver
+#Se dibujara en R2-D23D
+camara="dutch"
+glCamaraVista(camara)
 obj3D(objeto,color)
 glFinish(objeto+"3D")
 

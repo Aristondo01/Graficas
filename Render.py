@@ -24,6 +24,8 @@ class Render(object):
         self.luz =V3(0,0,-1)
         self.Model = None
         self.Vista = None
+        self.Projection = None
+        self.ViewPort = None
      
     def loadModelMatriz(self,translate=(0,0,0),scale=(1,1,1),rotate=(0,0,0)):
         translate=V3(*translate)
@@ -85,6 +87,31 @@ class Render(object):
 
         self.Vista = Mi * O
 
+    def loadProjectionMatrix(self):
+        #coef = -1/(eye.length() -center.length())
+        self.Projection = MM([
+            [1,0,0,0],
+            [0,1,0,0],
+            [0,0,1,0],
+            [0,0,-0.001,1],
+            
+        ])
+        
+    def loadVieportMatrix(self):
+        
+        x=0
+        y=0
+        w=self.width/2
+        h=self.height/2
+        
+        self.ViewPort = MM([
+            [w,0,   0,  x + w],
+            [0,h,   0,  y + h],
+            [0,0, 128,  128  ],
+            [0,0,   0,  1    ],
+            
+        ])
+
     def lookAt(self, eye, center, up):
         eye = V3(*eye)
         center = V3(*center)
@@ -95,6 +122,7 @@ class Render(object):
         y = (z * x).normalize()
 
         self.loadViewMatrix(x,y,z, center)
+        self.loadProjectionMatrix()
     
     def vertexConvert (self,x,y):
         return [round(self.xVp+(x+1)*0.5*self.widthVp-1),round(self.yVp+(y+1)*0.5*self.heightVp-1)]    
@@ -104,6 +132,8 @@ class Render(object):
         self.heightVp = newh
         self.yVp=y
         self.xVp=x
+        self.loadVieportMatrix()
+        
         
     def get_Texture(self,nombre):
         t=Texture(nombre)
@@ -347,7 +377,8 @@ class Render(object):
     def transform_vertex(self,vertex):
         
         vertex_aumentado=MM([[vertex[0]],[vertex[1]],[vertex[2]],[1]])
-        transformed_vertex= self.Model *self.Vista *vertex_aumentado
+        transformed_vertex= self.ViewPort * self.Projection * self.Vista * self.Model * vertex_aumentado
+        
         
         return V3(
             transformed_vertex.matriz[0][0]/transformed_vertex.matriz[3][0],
