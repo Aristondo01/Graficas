@@ -15,7 +15,7 @@ rotate = (0,pi/5,0)
 glLoadMMatriz(translate_factor,scale_factor,rotate)
 #En cámara ingresar el tipo de toma que se desea ver
 #Se dibujara en R2-D23D
-camara="dutch"
+camara="medium"
 glCamaraVista(camara)
 obj3D(objeto,color)
 glFinish(objeto+"3D")

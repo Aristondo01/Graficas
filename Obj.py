@@ -8,6 +8,7 @@ class Obj(object):
         self.caras = []
         self.tvertices=[]
         self.body=[]
+        self.nvertices=[]
         
         for line in self.lines:
             if (line!="" and len(line.split(' ',1))>1):
@@ -30,3 +31,10 @@ class Obj(object):
                     list(map(int,face.split('/')))
                     for face in value.split(' ')
                     ])
+                
+            if prefix == 'vn':
+                self.nvertices.append(
+                    list( 
+                            map(float, value.split(' '))
+                        )
+                    )

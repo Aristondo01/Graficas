@@ -287,6 +287,10 @@ class Render(object):
         tB=next(self.trianguloarray)
         tC=next(self.trianguloarray)
             #tA,tB,tC=Tvertices
+        
+        nA=next(self.trianguloarray)
+        nB=next(self.trianguloarray)
+        nC=next(self.trianguloarray)
              
         L=self.luz
         N = (v3-v1) * (v2-v1)
@@ -450,6 +454,27 @@ class Render(object):
                     ft3 = face[2][1] - 1
                     ft4 = face[3][1] - 1
                     #Si truena
+                    
+                    try:
+                    
+                        fn1 = face[0][2] - 1
+                        fn2 = face[1][2] - 1
+                        fn3 = face[2][2] - 1
+                        fn4 = face[3][2] - 1
+                        
+                        
+                        vn1 = self.transform_vertex(figura.nvertices[fn1])
+                        vn2 = self.transform_vertex(figura.nvertices[fn2])
+                        vn3 = self.transform_vertex(figura.nvertices[fn3])
+                        vn4 = self.transform_vertex(figura.nvertices[fn4])
+
+                    except:
+                        print("No tiene normales")
+                        vn1 = 0
+                        vn2 = 0
+                        vn3 = 0
+                        vn4 = 0
+                    
                     try:
                         vt1 = V3(*figura.tvertices[ft1])
                         vt2 = V3(*figura.tvertices[ft2])
@@ -469,6 +494,9 @@ class Render(object):
                     self.trianguloarray.append(vt1)
                     self.trianguloarray.append(vt2)
                     self.trianguloarray.append(vt3)
+                    self.trianguloarray.append(vn1)
+                    self.trianguloarray.append(vn2)
+                    self.trianguloarray.append(vn3)
                     
                     
                     self.trianguloarray.append(v1)
@@ -477,6 +505,9 @@ class Render(object):
                     self.trianguloarray.append(vt1)
                     self.trianguloarray.append(vt3)
                     self.trianguloarray.append(vt4)
+                    self.trianguloarray.append(vn1)
+                    self.trianguloarray.append(vn3)
+                    self.trianguloarray.append(vn4)
                 
                 if len(face)==3:
                     f1 = face[0][0] - 1
@@ -491,6 +522,22 @@ class Render(object):
                     ft2 = face[1][1] - 1
                     ft3 = face[2][1] - 1
 
+                    try:
+                    
+                        fn1 = face[0][2] - 1
+                        fn2 = face[1][2] - 1
+                        fn3 = face[2][2] - 1
+                        
+                        
+                        vn1 = self.transform_vertex(figura.nvertices[fn1])
+                        vn2 = self.transform_vertex(figura.nvertices[fn2])
+                        vn3 = self.transform_vertex(figura.nvertices[fn3])
+
+                    except:
+                        print("No tiene normales")
+                        vn1 = 0
+                        vn2 = 0
+                        vn3 = 0
                     
                     try:
                         vt1 = V3(*figura.tvertices[ft1])
@@ -508,6 +555,9 @@ class Render(object):
                     self.trianguloarray.append(vt1)
                     self.trianguloarray.append(vt2)
                     self.trianguloarray.append(vt3)
+                    self.trianguloarray.append(vn1)
+                    self.trianguloarray.append(vn2)
+                    self.trianguloarray.append(vn3)
 
             self.draw()
             
