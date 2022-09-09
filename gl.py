@@ -51,7 +51,7 @@ def glLoadMMatriz (translate_factor,scale_factor,rotate):
 def glCamaraVista(tipo):
     if  (tipo.lower()=="medium"):
         #r.lookAt(eye, center, up)
-        r.lookAt((1,0,0), (0,0,0), (0,1,0))
+        r.lookAt((0,0,1), (0,0,0), (0,1,0))
     elif(tipo.lower()=="high"):
         r.lookAt((1,1,0), (0.6,0.3,0), (0,1,0.1))
     elif(tipo.lower()=="low"):

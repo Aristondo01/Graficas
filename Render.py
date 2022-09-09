@@ -26,6 +26,7 @@ class Render(object):
         self.Vista = None
         self.Projection = None
         self.ViewPort = None
+        self.active_shader=None
      
     def loadModelMatriz(self,translate=(0,0,0),scale=(1,1,1),rotate=(0,0,0)):
         translate=V3(*translate)
@@ -121,6 +122,7 @@ class Render(object):
         x = (up * z).normalize()
         y = (z * x).normalize()
 
+        #self.active_shader=self.shader
         self.loadViewMatrix(x,y,z, center)
         self.loadProjectionMatrix()
     
@@ -269,13 +271,36 @@ class Render(object):
         u= cx / cz
         v= cy / cz
         w= 1 -(cx + cy)/cz 
-        return (w,v,u)
+        return (w,u,v)
     
     def triangulo2(self,temp):
         #temp =[v1,v2,v3]
         for i in range(len(temp)):
             self.line(temp[i],temp[(i+1)%3])
-          
+    
+    def shader(self,**kwargs):
+                
+        w,u,v = kwargs['bar']
+        L=kwargs['light']
+        v1,v2,v3 = kwargs['vertices']
+        tA,tB,tC = kwargs['texture_coords']
+        nA,nB,nC = kwargs['normals']
+        
+        iA=nA.normalize() @ L.normalize()
+        iB=nB.normalize() @ L.normalize()
+        iC=nC.normalize() @ L.normalize()
+        i = (iA * w + iB * u + iC * v)*1.75
+        
+        print(-i)
+        
+        if self.texture:
+            tx = tA.x * w + tB.x * u + tC.x * v
+            ty = tA.y * w + tB.y * u + tC.y * v 
+            return self.texture.intensity(tx, ty, -i)
+        else:
+            return (round(self.pcolor[0]*i),round(self.pcolor[1]*i),round(self.pcolor[2]*i))
+
+    
     def triangulo(self):
         
         #v1,v2,v3=Vertices
@@ -291,18 +316,19 @@ class Render(object):
         nA=next(self.trianguloarray)
         nB=next(self.trianguloarray)
         nC=next(self.trianguloarray)
-             
+
+        
+        #Quitar
         L=self.luz
         N = (v3-v1) * (v2-v1)
+        
+        
         i= N.normalize() @ L.normalize()
         
         if i <= 0 or i>1:
             return
         
-        if not self.texture:
-            self.pcolor=(round(self.pcolor[0]*i),round(self.pcolor[1]*i),round(self.pcolor[2]*i))
-        
-        
+        #Quitar
         
         Bmin,Bmax = self.bounding_box(v1,v2,v3)
         Bmin.round()
@@ -310,7 +336,7 @@ class Render(object):
         
         for x in range(Bmin.x,Bmax.x+1):
             for y in range(Bmin.y,Bmax.y+1):
-                w,v,u = self.baricentric(v1,v2,v3,V3(x,y))
+                w,u,v = self.baricentric(v1,v2,v3,V3(x,y))
                 
                 if(w<0 or v<0 or u <0):
                     continue
@@ -318,12 +344,24 @@ class Render(object):
                 z= v1.z * w + v2.z * v + v3.z * u
                 if (self.zBuffer[x][y]<z):
                     self.zBuffer[x][y]=z
-                    
+                    """
                     if self.texture:
                         tx = tA.x * w + tB.x * u + tC.x * v
                         ty = tA.y * w + tB.y * u + tC.y * v 
                         self.pcolor = self.texture.intensity(tx, ty, i)
-                    #if self.pcolor:
+                    """
+                    #"""
+                    self.pcolor=self.shader(
+
+                        bar=(w,u,v),
+                        vertices=(v1,v2,v3),
+                        texture_coords = (tA,tB,tC),
+                        normals=(nA,nB,nC),
+                        light= self.luz,
+                    )
+                    #"""
+                    
+                    
                     self.point(x,y)
         pass
         
