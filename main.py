@@ -4,7 +4,7 @@ objeto="R2-D2"
 glInit()
 glCreateWindow(480,480)
 glViewPort(0,0,512,512)
-glClearColor(1, 1, 1)
+glClearColor(0, 0, 1)
 glClear()
 glColor(1,1,1)
 color=(0,0,1)

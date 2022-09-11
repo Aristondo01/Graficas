@@ -1,6 +1,5 @@
 from Obj import Obj
 from random import random
-from sympy import Point
 from WriteUtilities import * 
 from Color import *
 from vector import V3
@@ -291,7 +290,6 @@ class Render(object):
         iC=nC.normalize() @ L.normalize()
         i = (iA * w + iB * u + iC * v)*1.75
         
-        print(-i)
         
         if self.texture:
             tx = tA.x * w + tB.x * u + tC.x * v
@@ -487,10 +485,7 @@ class Render(object):
                     v4 = self.transform_vertex(figura.vertices[f4])
 
 
-                    ft1 = face[0][1] - 1
-                    ft2 = face[1][1] - 1
-                    ft3 = face[2][1] - 1
-                    ft4 = face[3][1] - 1
+                   
                     #Si truena
                     
                     try:
@@ -514,6 +509,11 @@ class Render(object):
                         vn4 = 0
                     
                     try:
+                        ft1 = face[0][1] - 1
+                        ft2 = face[1][1] - 1
+                        ft3 = face[2][1] - 1
+                        ft4 = face[3][1] - 1
+
                         vt1 = V3(*figura.tvertices[ft1])
                         vt2 = V3(*figura.tvertices[ft2])
                         vt3 = V3(*figura.tvertices[ft3])
@@ -556,9 +556,7 @@ class Render(object):
                     v2 = self.transform_vertex(figura.vertices[f2])
                     v3 = self.transform_vertex(figura.vertices[f3])
 
-                    ft1 = face[0][1] - 1
-                    ft2 = face[1][1] - 1
-                    ft3 = face[2][1] - 1
+
 
                     try:
                     
@@ -578,6 +576,9 @@ class Render(object):
                         vn3 = 0
                     
                     try:
+                        ft1 = face[0][1] - 1
+                        ft2 = face[1][1] - 1
+                        ft3 = face[2][1] - 1
                         vt1 = V3(*figura.tvertices[ft1])
                         vt2 = V3(*figura.tvertices[ft2])
                         vt3 = V3(*figura.tvertices[ft3])
