@@ -119,3 +119,6 @@ def obj3D(nombre,color):
 def glFinish(nombre):
     r.write(nombre+'.bmp') 
 
+def glFondo(nombre):
+    r.fondo(nombre+".bmp")
+

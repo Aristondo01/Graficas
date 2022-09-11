@@ -1,5 +1,6 @@
+import math
 from Obj import Obj
-from random import random
+import random
 from WriteUtilities import * 
 from Color import *
 from vector import V3
@@ -289,6 +290,7 @@ class Render(object):
         iB=nB.normalize() @ L.normalize()
         iC=nC.normalize() @ L.normalize()
         i = (iA * w + iB * u + iC * v)*1.75
+
         
         
         if self.texture:
@@ -296,8 +298,40 @@ class Render(object):
             ty = tA.y * w + tB.y * u + tC.y * v 
             return self.texture.intensity(tx, ty, -i)
         else:
-            return (round(self.pcolor[0]*i),round(self.pcolor[1]*i),round(self.pcolor[2]*i))
+            return (round(self.pcolor[0]*-i),round(self.pcolor[1]*-i),round(self.pcolor[2]*-i))
 
+
+    def planeta(self,**kwargs):
+                    
+        w,u,v = kwargs['bar']
+        L=kwargs['light']
+        v1,v2,v3 = kwargs['vertices']
+        tA,tB,tC = kwargs['texture_coords']
+        nA,nB,nC = kwargs['normals']
+        x= kwargs['coordX']
+        y= kwargs['coordY']
+
+        
+        iA=nA.normalize() @ L.normalize()
+        iB=nB.normalize() @ L.normalize()
+        iC=nC.normalize() @ L.normalize()
+        i = (iA * w + iB * u + iC * v)*-1
+
+        self.pcolor=(round(122*i),round(122*i),round(122*i))
+        self.point(round((x/4)+25),round((y/4)))
+
+        self.pcolor=(round(218*i),round(218*i),round(218*i))
+        self.point(round((x/4.5)+self.width*0.7),round((y/4.5)+self.width*0.7))
+
+        if True:
+            rojorandom= random.randint(0,50)
+            rojo = 238 +rojorandom
+            verde = 109
+            azul= 60
+            return (round(rojo*i),round(verde*i),round(azul*i))
+            
+
+        
     
     def triangulo(self):
         
@@ -349,14 +383,28 @@ class Render(object):
                         self.pcolor = self.texture.intensity(tx, ty, i)
                     """
                     #"""
-                    self.pcolor=self.shader(
+                    if self.texture:
+                        self.pcolor=self.shader(
 
-                        bar=(w,u,v),
-                        vertices=(v1,v2,v3),
-                        texture_coords = (tA,tB,tC),
-                        normals=(nA,nB,nC),
-                        light= self.luz,
-                    )
+                            bar=(w,u,v),
+                            vertices=(v1,v2,v3),
+                            texture_coords = (tA,tB,tC),
+                            normals=(nA,nB,nC),
+                            light= self.luz,
+                        )
+                    else:
+                        #Borrrar entrega planeta
+                        self.pcolor=self.planeta(
+
+                            bar=(w,u,v),
+                            vertices=(v1,v2,v3),
+                            texture_coords = (tA,tB,tC),
+                            normals=(nA,nB,nC),
+                            light= self.luz,
+                            coordX=x,
+                            coordY=y
+
+                        )
                     #"""
                     
                     
@@ -426,6 +474,9 @@ class Render(object):
             transformed_vertex.matriz[2][0]/transformed_vertex.matriz[3][0]
             
         )
+    def fondo(self,nombre):
+        t=Texture(nombre)
+        self.framebuffer=t.pixels
 
     def plano(self,nombre,OBJ3D):
         t=Texture(nombre)
@@ -502,7 +553,6 @@ class Render(object):
                         vn4 = self.transform_vertex(figura.nvertices[fn4])
 
                     except:
-                        print("No tiene normales")
                         vn1 = 0
                         vn2 = 0
                         vn3 = 0
@@ -570,7 +620,6 @@ class Render(object):
                         vn3 = self.transform_vertex(figura.nvertices[fn3])
 
                     except:
-                        print("No tiene normales")
                         vn1 = 0
                         vn2 = 0
                         vn3 = 0
@@ -599,6 +648,8 @@ class Render(object):
                     self.trianguloarray.append(vn3)
 
             self.draw()
+
+
             
     def draw (self):
         self.trianguloarray=iter(self.trianguloarray)
