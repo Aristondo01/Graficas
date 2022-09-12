@@ -1,4 +1,5 @@
 import math
+from turtle import width
 from Obj import Obj
 import random
 from WriteUtilities import * 
@@ -27,6 +28,7 @@ class Render(object):
         self.Projection = None
         self.ViewPort = None
         self.active_shader=None
+        self.planetarray=[]
      
     def loadModelMatriz(self,translate=(0,0,0),scale=(1,1,1),rotate=(0,0,0)):
         translate=V3(*translate)
@@ -300,7 +302,6 @@ class Render(object):
         else:
             return (round(self.pcolor[0]*-i),round(self.pcolor[1]*-i),round(self.pcolor[2]*-i))
 
-
     def planeta(self,**kwargs):
                     
         w,u,v = kwargs['bar']
@@ -315,7 +316,7 @@ class Render(object):
         iA=nA.normalize() @ L.normalize()
         iB=nB.normalize() @ L.normalize()
         iC=nC.normalize() @ L.normalize()
-        i = (iA * w + iB * u + iC * v)*-1
+        i = (iA * w + iB * u + iC * v)*-1.75
 
         self.pcolor=(round(122*i),round(122*i),round(122*i))
         self.point(round((x/4)+25),round((y/4)))
@@ -323,16 +324,28 @@ class Render(object):
         self.pcolor=(round(218*i),round(218*i),round(218*i))
         self.point(round((x/4.5)+self.width*0.7),round((y/4.5)+self.width*0.7))
 
-        if True:
-            rojorandom= random.randint(0,50)
-            rojo = 238 +rojorandom
-            verde = 109
-            azul= 60
-            return (round(rojo*i),round(verde*i),round(azul*i))
-            
-
+        rojorandom= random.randint(0,50)
+        rojo = 238 +rojorandom
+        verde = 109
+        azul= 60
+        aleatorio = random.randint(0,3)
         
-    
+        if y % 2 ==0:
+            if x >355 and aleatorio ==2:
+                return (round(245*i),round(120*i),round(66*i))
+            elif aleatorio== 1:
+                return (round(234*i),round(105*i),round(56*i))
+            else:
+                return (round(rojo*i),round(verde*i),round(azul*i))
+
+        else:
+            if x <355 and aleatorio ==3:
+                return (round(245*i),round(120*i),round(66*i))
+            elif aleatorio== 3:
+                return (round(234*i),round(105*i),round(56*i))
+            else:
+                return (round(rojo*i),round(verde*i),round(azul*i))
+
     def triangulo(self):
         
         #v1,v2,v3=Vertices
@@ -650,6 +663,128 @@ class Render(object):
             self.draw()
 
 
+    #Borrar entrega planeta
+    def manchas(self):
+    
+        desplazamientoY=round(self.height*0.30)
+        desplazamientoX=round(self.width*0.45)
+
+
+        for y in range(100):
+            xx= random.uniform(0.8,1)
+            for x in range(40):
+                eleccion= random.randint(0,2)
+
+                i=((y+desplazamientoY)/self.height)*1.75
+
+                if eleccion == 1:
+                    #self.pcolor=(round(65*i),round(45*i),round(43*i))
+                    self.pcolor=(round(245*i),round(120*i),round(66*i))
+                    self.point(x+round((desplazamientoX-y)*xx),y+(desplazamientoY))
+                    i=((y-10+(desplazamientoY))/self.height)*1.75
+                    self.pcolor=(round(245*i),round(120*i),round(66*i))
+                    self.point(x+round((desplazamientoX+y)*xx),y-10+(desplazamientoY))
+                    i=((y-50+(desplazamientoY))/self.height)*1.75
+                    self.pcolor=(round(245*i),round(120*i),round(66*i))
+                    self.point(x+round((desplazamientoX-y)*xx),y-50+(desplazamientoY))
+
+
+                elif eleccion == 2:
+                    #self.pcolor=(round(97*i),round(58*i),round(50*i))
+                    self.pcolor=(round(234*i),round(105*i),round(56*i))
+                    self.point(x+round((desplazamientoX-y)*xx),y+(desplazamientoY))
+                    i=((y-10+(desplazamientoY))/self.height)*1.75
+                    self.pcolor=(round(234*i),round(105*i),round(56*i))
+                    self.point(x+round((desplazamientoX+y)*xx),y-10+(desplazamientoY))
+                    i=((y-50+(desplazamientoY))/self.height)*1.75
+                    self.pcolor=(round(234*i),round(105*i),round(56*i))
+                    self.point(x+round((desplazamientoX-y)*xx),y-50+(desplazamientoY))
+
+                else:
+                    self.pcolor=(round(250*i),round(124*i),round(73*i))
+                    self.point(x+round((desplazamientoX-y)*xx),y+(desplazamientoY))
+                    i=((y-10+(desplazamientoY))/self.height)*1.75
+                    self.pcolor=(round(250*i),round(124*i),round(73*i))
+                    self.point(x+round((desplazamientoX+y)*xx),y-10+(desplazamientoY))
+                    i=((y-50+(desplazamientoY))/self.height)*1.75
+                    self.pcolor=(round(250*i),round(124*i),round(73*i))
+                    self.point(x+round((desplazamientoX-y)*xx),y-50+(desplazamientoY))
+                
+
+
+
+        desplazamientoY=round(self.height*0.66)
+        desplazamientoX=round(self.width*0.75)
+
+
+        for y in range(90):
+            xx= random.uniform(0.65,0.9)
+            for x in range(50):
+                eleccion= random.randint(0,2)
+
+                if eleccion == 1:
+                    self.pcolor=(round(105),round(49),round(27))
+
+                
+                elif eleccion == 2:
+                    self.pcolor=(round(105),round(49),round(27))
+
+                else:
+                    self.pcolor=(round(105),round(49),round(27))
+
+                self.point(x+round((desplazamientoX-y)*xx),y+(desplazamientoY))
+                self.point(x+round((desplazamientoX-y)*xx),y-50+(desplazamientoY))
+                self.point(x-35+round((desplazamientoX-y)*xx),-y+(desplazamientoY))
+
+
+        desplazamientoY=round(self.height*0.45)
+        desplazamientoX=round(self.width*0.84)
+
+
+        for y in range(35):
+            xx= random.uniform(0.65,0.9)
+            for x in range(47):
+                eleccion= random.randint(0,2)
+
+                if eleccion == 1:
+                    self.pcolor=(round(105),round(49),round(27))
+
+                
+                elif eleccion == 2:
+                    self.pcolor=(round(105),round(49),round(27))
+
+                else:
+                    self.pcolor=(round(105),round(49),round(27))
+
+                self.point(x+round((desplazamientoX-y)*xx),y+(desplazamientoY))
+                self.point(x+round((desplazamientoX-y)*xx),y-15+(desplazamientoY))
+                self.point(x-20+round((desplazamientoX-y)*xx),y-55+(desplazamientoY))
+
+        
+        desplazamientoY=round(self.height*0.5)
+        desplazamientoX=round(self.width*0.32)
+
+
+        for y in range(35):
+            xx= random.uniform(0.65,0.9)
+            for x in range(20):
+                eleccion= random.randint(0,2)
+
+                if eleccion == 1:
+                    self.pcolor=(round(105),round(49),round(27))
+
+                
+                elif eleccion == 2:
+                    self.pcolor=(round(105),round(49),round(27))
+
+                else:
+                    self.pcolor=(round(105),round(49),round(27))
+
+                self.point(x+round((desplazamientoX-y)*xx),y+(desplazamientoY))
+                self.point(x+20+round((desplazamientoX-y)*xx),y+35+(desplazamientoY))
+                self.point(x+20+round((desplazamientoX-y)*xx),y-35+(desplazamientoY))
+
+
             
     def draw (self):
         self.trianguloarray=iter(self.trianguloarray)
@@ -657,5 +792,8 @@ class Render(object):
             while True:
                 self.triangulo()
         except: StopIteration
+        self.manchas()
+
+    
                     
         

@@ -1,7 +1,7 @@
 from gl import *
 
-objeto="luna"
 objeto="R2-D2"
+objeto="planeta"
 glInit()
 glCreateWindow(720,720)
 glViewPort(0,0,720,720)
@@ -9,10 +9,10 @@ glClearColor(0, 0, 0)
 glClear()
 glColor(1,1,1)
 color=(1,0,1)
-glTexture(objeto)
-#glFondo(objeto)
-translate_factor = (0,-0.5,0)
-scale_factor = (0.55,0.55,0.55)
+#glTexture(objeto)
+glFondo(objeto)
+translate_factor = (0,0,0)
+scale_factor = (0.65,0.65,0.65)
 rotate = (0,0,0)
 glLoadMMatriz(translate_factor,scale_factor,rotate)
 #En cámara ingresar el tipo de toma que se desea ver
