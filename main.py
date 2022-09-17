@@ -1,29 +1,46 @@
 from gl import *
 
-objeto="R2-D2"
-objeto="planeta"
+objeto="Falcon"
 glInit()
-glCreateWindow(720,720)
-glViewPort(0,0,720,720)
-glClearColor(0, 0, 0)
+glCreateWindow(640,640)
+glClearColor(0, 1, 0)
 glClear()
-glColor(1,1,1)
+glColor(1,0,1)
 color=(1,0,1)
-#glTexture(objeto)
-glFondo(objeto)
-translate_factor = (0,0,0)
-scale_factor = (0.65,0.65,0.65)
-rotate = (0,0,0)
-glLoadMMatriz(translate_factor,scale_factor,rotate)
-#En cámara ingresar el tipo de toma que se desea ver
-#Se dibujara en R2-D23D
 camara="medium"
-glCamaraVista(camara)
+
+glFondo("jungla")
+
+
+#Primer modelo
+glLookAt((0,0,1), (0,0,0), (0,1,0))
+glViewPort(200,200,115,115)
+glTexture(objeto)
+translate_factor = (1.3,1.4,0)
+scale_factor = (0.5,0.5,0.5)
+rotate = (0,-16*pi/18,0)
+glIntensidadLuz(2.75)
+glLoadMMatriz(translate_factor,scale_factor,rotate)
 obj3D(objeto,color)
-glFinish(objeto+"3D")
 
 
-#glPlano(objeto,objeto,4096,4096)
+
+#Segundo modelo
+glLookAt((0,0,1), (0,0,0), (0,1,0))
+glViewPort(0,0,115,115)
+glTexture(objeto)
+translate_factor = (1.3,1.4,0)
+scale_factor = (0.5,0.5,0.5)
+rotate = (0,-16*pi/18,0)
+glIntensidadLuz(1.75)
+glLoadMMatriz(translate_factor,scale_factor,rotate)
+obj3D(objeto,color)
+
+
+glFinish("Proyecto 3D")
+
+
+#glPlano(objeto,objeto,128,128)
 
 
 

@@ -13,6 +13,10 @@ def glPlano(nombre,OBJ3D,w,h):
 def glTexture(nombre):
     r.get_Texture(nombre+".bmp")
 
+
+def glIntensidadLuz(num):
+    r.constantLuz=num
+
 def glPixel(coordenada, tam):
     temp = coordenada / tam
     return (temp*2)-1
