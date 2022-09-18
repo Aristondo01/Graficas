@@ -480,7 +480,7 @@ class Render(object):
         vertex_aumentado=MM([[vertex[0]],[vertex[1]],[vertex[2]],[1]])
         transformed_vertex= self.ViewPort * self.Projection * self.Vista * self.Model * vertex_aumentado
         
-        
+        #print(transformed_vertex)
         return V3(
             transformed_vertex.matriz[0][0]/transformed_vertex.matriz[3][0],
             transformed_vertex.matriz[1][0]/transformed_vertex.matriz[3][0],

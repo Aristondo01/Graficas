@@ -10,7 +10,7 @@ camara="medium"
 
 glFondo("jungla")
 
-
+'''  '''
 #Primer modelo
 objeto="Falcon"
 glLookAt((0,0,1), (0,0,0), (0,1,0))
@@ -38,20 +38,18 @@ glLoadMMatriz(translate_factor,scale_factor,rotate)
 obj3D(objeto,color)
 
 
-
-'''
 #Tercer modelo
 objeto="dino"
 glLookAt((0,0,1), (0,0,0), (0,1,0))
-glViewPort(0,0,600,600)
+glViewPort(0,0,150,150)
 glTexture(objeto)
-translate_factor = (0,0,0)
-scale_factor = (1,1,1)
-rotate = (0,0,0)
-glIntensidadLuz(1.75)
+translate_factor = (0,-0.97,0)
+scale_factor = (0.03,0.03,0.03)
+rotate = (0,pi/5,0)
+glIntensidadLuz(2)
 glLoadMMatriz(translate_factor,scale_factor,rotate)
 obj3D(objeto,color)
-'''
+
 
 glFinish("Proyecto 3D")
 
