@@ -1,8 +1,7 @@
 from gl import *
 
-objeto="Falcon"
 glInit()
-glCreateWindow(640,640)
+glCreateWindow(740,640)
 glClearColor(0, 1, 0)
 glClear()
 glColor(1,0,1)
@@ -13,11 +12,12 @@ glFondo("jungla")
 
 
 #Primer modelo
+objeto="Falcon"
 glLookAt((0,0,1), (0,0,0), (0,1,0))
 glViewPort(200,200,115,115)
 glTexture(objeto)
 translate_factor = (1.3,1.4,0)
-scale_factor = (0.5,0.5,0.5)
+scale_factor = (0.45,0.45,0.45)
 rotate = (0,-16*pi/18,0)
 glIntensidadLuz(2.75)
 glLoadMMatriz(translate_factor,scale_factor,rotate)
@@ -26,16 +26,32 @@ obj3D(objeto,color)
 
 
 #Segundo modelo
+objeto="frog"
 glLookAt((0,0,1), (0,0,0), (0,1,0))
-glViewPort(0,0,115,115)
+glViewPort(500,0,90,90)
 glTexture(objeto)
-translate_factor = (1.3,1.4,0)
-scale_factor = (0.5,0.5,0.5)
-rotate = (0,-16*pi/18,0)
-glIntensidadLuz(1.75)
+translate_factor = (0.2,-0.7,0)
+scale_factor = (0.15,0.15,0.15)
+rotate = (pi/2,0,0)
+glIntensidadLuz(3.75)
 glLoadMMatriz(translate_factor,scale_factor,rotate)
 obj3D(objeto,color)
 
+
+
+'''
+#Tercer modelo
+objeto="dino"
+glLookAt((0,0,1), (0,0,0), (0,1,0))
+glViewPort(0,0,600,600)
+glTexture(objeto)
+translate_factor = (0,0,0)
+scale_factor = (1,1,1)
+rotate = (0,0,0)
+glIntensidadLuz(1.75)
+glLoadMMatriz(translate_factor,scale_factor,rotate)
+obj3D(objeto,color)
+'''
 
 glFinish("Proyecto 3D")
 

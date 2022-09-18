@@ -134,8 +134,8 @@ class Render(object):
     def viewPort (self,x,y,neww,newh):
         self.widthVp = neww
         self.heightVp = newh
-        self.yVp=y
-        self.xVp=x
+        self.yVp=0
+        self.xVp=0
         self.loadVieportMatrix(x,y,neww,newh)
         
         
