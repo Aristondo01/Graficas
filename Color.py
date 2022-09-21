@@ -9,3 +9,6 @@ def intcolor(n):
 
 def intcolora(n):
         return [round(n[0]*255),round(n[1]*255),round(n[2]*255)]
+
+def normalcolor(n):
+        return (n/250)

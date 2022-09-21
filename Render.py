@@ -1,4 +1,6 @@
 import math
+from operator import ge
+from tkinter import ttk
 from turtle import width
 from Obj import Obj
 import random
@@ -144,8 +146,8 @@ class Render(object):
         self.texture=t
     
     def get_NormMapping(self,nombre):
-        t=Texture(nombre)
-        self.normalMapping=t
+        tt=Texture(nombre)
+        self.normalMapping=tt
     
     def backgroundcolor(self,r,g,b):
         self.color = [intcolor(r),intcolor(g),intcolor(b)]
@@ -264,7 +266,6 @@ class Render(object):
             return (round(self.pcolor[0]*-i),round(self.pcolor[1]*-i),round(self.pcolor[2]*-i))
 
     def triangulo(self):
-        
         #v1,v2,v3=Vertices
         v1=next(self.trianguloarray)
         v2=next(self.trianguloarray)
@@ -302,12 +303,32 @@ class Render(object):
                 
                 if(w<0 or v<0 or u <0):
                     continue
-                
                 z= v1.z * w + v2.z * v + v3.z * u
                 if (self.zBuffer[x][y]<z):
                     self.zBuffer[x][y]=z
                     
-                    if self.texture:
+                    
+                    if self.normalMapping:
+                        
+                        red=(self.normalMapping.pixels[y][x][2])
+                        green=(self.normalMapping.pixels[y][x][1])
+                        blue=(self.normalMapping.pixels[y][x][0])
+                        
+                        N = V3(red,green,blue)
+                        i = N.normalize() @ L.normalize()
+                        
+                        
+                        red=(self.texture.pixels[y][x][2])
+                        green=(self.texture.pixels[y][x][1])
+                        blue=(self.texture.pixels[y][x][0])
+                        
+                        
+                        self.pcolor=(round(red*-i),round(green*-i),round(blue*-i))
+                        
+                        
+                        
+                    
+                    elif self.texture:
                         self.pcolor=self.shader(
 
                             bar=(w,u,v),
@@ -390,49 +411,7 @@ class Render(object):
     def fondo(self,nombre):
         t=Texture(nombre)
         self.framebuffer=t.pixels
-
-    def plano(self,nombre,OBJ3D):
-        t=Texture(nombre)
-        self.framebuffer=t.pixels
-
-
-        figura = Obj(OBJ3D+'.obj')
-        w=[t.width,t.heigth,0]
-        e=[0,0,0]
-
-
-        for face in figura.caras:
-            g=face.pop()
-            if len(face)==3:
-                f1 = face[0][1] - 1
-                f2 = face[1][1] - 1
-                f3 = face[2][1] - 1
-
-                v1 = self.transform_vertex(figura.tvertices[f1],w,e)
-                v2 = self.transform_vertex(figura.tvertices[f2],w,e)
-                v3 = self.transform_vertex(figura.tvertices[f3],w,e)
-
-                self.triangulo2((v1,v2,v3))
-            
-            if len(face)==4:
-                
-                f1 = face[0][1] - 1
-                f2 = face[1][1] - 1
-                f3 = face[2][1] - 1
-                f4 = face[3][1] - 1
-
-                v1 = self.transform_vertex(figura.tvertices[f1],w,e)
-                v2 = self.transform_vertex(figura.tvertices[f2],w,e)
-                v3 = self.transform_vertex(figura.tvertices[f3],w,e)
-                v4 = self.transform_vertex(figura.tvertices[f4],w,e)
-
-                
-                self.triangulo2((v1,v2,v3))
-                self.triangulo2((v1,v3,v4))
-                
-                
-        self.write()   
-    
+  
     def ObjCall(self,nombre,color):
             figura = Obj(nombre+'.obj')
             self.pointcolor(*color)
@@ -465,11 +444,6 @@ class Render(object):
                         vn3 = self.transform_vertex(figura.nvertices[fn3])
                         vn4 = self.transform_vertex(figura.nvertices[fn4])
 
-                        '''
-                        vn1 = V3(*figura.nvertices[fn1])
-                        vn2 = V3(*figura.nvertices[fn2])
-                        vn3 = V3(*figura.nvertices[fn3])
-                        vn4 = V3(*figura.nvertices[fn4])'''
 
                     except:
                         vn1 = 0
@@ -537,10 +511,6 @@ class Render(object):
                         vn1 = self.transform_vertex(figura.nvertices[fn1])
                         vn2 = self.transform_vertex(figura.nvertices[fn2])
                         vn3 = self.transform_vertex(figura.nvertices[fn3])
-                        '''
-                        vn1 = V3(*figura.nvertices[fn1])
-                        vn2 = V3(*figura.nvertices[fn2])
-                        vn3 = V3(*figura.nvertices[fn3])'''
 
                     except:
                         vn1 = 0
@@ -589,8 +559,7 @@ class Render(object):
             self.normalMapping=None
             self.zBuffer=[
             [-99999 for x in range(self.width)]
-            for y in range(self.height)
-        ]
+            for y in range(self.height)]
             StopIteration
 
 
