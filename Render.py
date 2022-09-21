@@ -29,6 +29,7 @@ class Render(object):
         self.ViewPort = None
         self.active_shader=None
         self.constantLuz=1
+        self.normalMapping=None
      
     def loadModelMatriz(self,translate=(0,0,0),scale=(1,1,1),rotate=(0,0,0)):
         translate=V3(*translate)
@@ -124,7 +125,6 @@ class Render(object):
         x = (up * z).normalize()
         y = (z * x).normalize()
 
-        #self.active_shader=self.shader
         self.loadViewMatrix(x,y,z, center)
         self.loadProjectionMatrix()
     
@@ -142,6 +142,10 @@ class Render(object):
     def get_Texture(self,nombre):
         t=Texture(nombre)
         self.texture=t
+    
+    def get_NormMapping(self,nombre):
+        t=Texture(nombre)
+        self.normalMapping=t
     
     def backgroundcolor(self,r,g,b):
         self.color = [intcolor(r),intcolor(g),intcolor(b)]
@@ -170,10 +174,6 @@ class Render(object):
             for y in range(self.height)
         ]
         
-        self.zpaint=[
-            [rgbcolor(*(10,50,180)) for x in range(self.width)]
-            for y in range(self.height)
-        ]
         
     def write(self, filename="a.bmp"):
         f = open(filename, 'bw')
@@ -213,45 +213,7 @@ class Render(object):
             f.write(bytes(extra))
         f.close()
         print("BMP Create in "+filename)
-    
-    def writez(self):
-        f = open("zbuffer.bmp", 'bw')
-        
-        extraBytes = (4 - (self.width * 3) % 4) % 4
-        new_width_bytes = (self.width * 3) + extraBytes
-        
-        #pixel header
-        f.write(char('B'))
-        f.write(char('M'))
-        f.write(dword(14 + 40 + new_width_bytes * self.height * 3))
-        f.write(word(0))
-        f.write(word(0))
-        f.write(dword(14 + 40))
-        
-        #info header
-        f.write(dword(40))
-        f.write(dword(self.width))
-        f.write(dword(self.height))
-        f.write(word(1))
-        f.write(word(24))
-        f.write(dword(0))
-        f.write(dword(self.height * self.width * 3))
-        f.write(dword(0))
-        f.write(dword(0))
-        f.write(dword(0))
-        f.write(dword(0))
-        
-        #pixel data
-        
-        for x in range(self.height):
-            for y in range(self.width):
-                f.write(self.zpaint[x][y])
-            extra = []
-            for i in range(extraBytes):
-                extra.append(0)
-            f.write(bytes(extra))
-        f.close()
-        
+           
     def point(self, x,y):
         if (x < self.width and x >= 0 and y < self.height and y >= 0):
             self.framebuffer[y][x] = rgbcolor(*self.pcolor)
@@ -294,57 +256,12 @@ class Render(object):
         i = (iA * w + iB * u + iC * v)*self.constantLuz
 
         
-        
         if self.texture:
             tx = tA.x * w + tB.x * u + tC.x * v
             ty = tA.y * w + tB.y * u + tC.y * v 
             return self.texture.intensity(tx, ty, -i)
         else:
             return (round(self.pcolor[0]*-i),round(self.pcolor[1]*-i),round(self.pcolor[2]*-i))
-
-    def planeta(self,**kwargs):
-                    
-        w,u,v = kwargs['bar']
-        L=kwargs['light']
-        v1,v2,v3 = kwargs['vertices']
-        tA,tB,tC = kwargs['texture_coords']
-        nA,nB,nC = kwargs['normals']
-        x= kwargs['coordX']
-        y= kwargs['coordY']
-
-        
-        iA=nA.normalize() @ L.normalize()
-        iB=nB.normalize() @ L.normalize()
-        iC=nC.normalize() @ L.normalize()
-        i = (iA * w + iB * u + iC * v)*-1.75
-
-        self.pcolor=(round(122*i),round(122*i),round(122*i))
-        self.point(round((x/4)+25),round((y/4)))
-
-        self.pcolor=(round(218*i),round(218*i),round(218*i))
-        self.point(round((x/4.5)+self.width*0.7),round((y/4.5)+self.width*0.7))
-
-        rojorandom= random.randint(0,50)
-        rojo = 238 +rojorandom
-        verde = 109
-        azul= 60
-        aleatorio = random.randint(0,3)
-        
-        if y % 2 ==0:
-            if x >355 and aleatorio ==2:
-                return (round(245*i),round(120*i),round(66*i))
-            elif aleatorio== 1:
-                return (round(234*i),round(105*i),round(56*i))
-            else:
-                return (round(rojo*i),round(verde*i),round(azul*i))
-
-        else:
-            if x <355 and aleatorio ==3:
-                return (round(245*i),round(120*i),round(66*i))
-            elif aleatorio== 3:
-                return (round(234*i),round(105*i),round(56*i))
-            else:
-                return (round(rojo*i),round(verde*i),round(azul*i))
 
     def triangulo(self):
         
@@ -389,13 +306,7 @@ class Render(object):
                 z= v1.z * w + v2.z * v + v3.z * u
                 if (self.zBuffer[x][y]<z):
                     self.zBuffer[x][y]=z
-                    """
-                    if self.texture:
-                        tx = tA.x * w + tB.x * u + tC.x * v
-                        ty = tA.y * w + tB.y * u + tC.y * v 
-                        self.pcolor = self.texture.intensity(tx, ty, i)
-                    """
-                    #"""
+                    
                     if self.texture:
                         self.pcolor=self.shader(
 
@@ -406,18 +317,7 @@ class Render(object):
                             light= self.luz,
                         )
                     else:
-                        #Borrrar entrega planeta
-                        self.pcolor=self.planeta(
-
-                            bar=(w,u,v),
-                            vertices=(v1,v2,v3),
-                            texture_coords = (tA,tB,tC),
-                            normals=(nA,nB,nC),
-                            light= self.luz,
-                            coordX=x,
-                            coordY=y
-
-                        )
+                        print("Error")
                     #"""
                     
                     
@@ -686,7 +586,7 @@ class Render(object):
             self.Vista = None
             self.Projection = None
             self.ViewPort = None
-
+            self.normalMapping=None
             self.zBuffer=[
             [-99999 for x in range(self.width)]
             for y in range(self.height)

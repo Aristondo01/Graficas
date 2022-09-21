@@ -13,6 +13,8 @@ def glPlano(nombre,OBJ3D,w,h):
 def glTexture(nombre):
     r.get_Texture(nombre+".bmp")
 
+def glNormalMapping(nombre):
+    r.get_NormMapping(nombre+".bmp")
 
 def glIntensidadLuz(num):
     r.constantLuz=num
